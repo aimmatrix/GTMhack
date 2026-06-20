@@ -148,32 +148,9 @@ input {
   line-height: 1.24;
 }
 
-.purpose-steps {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
-  margin: 30px auto 0;
-}
-
-.purpose-steps span {
-  display: inline-flex;
-  align-items: center;
-  min-height: 34px;
-  padding: 0 13px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.04);
-  color: rgba(255, 255, 255, 0.62);
-  font-family: var(--mono);
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
 .reach-entry {
   width: min(720px, 100%);
-  margin: 42px auto 0;
+  margin: 38px auto 0;
 }
 
 .reach-form {
@@ -300,10 +277,6 @@ input {
   .hero p {
     max-width: 350px;
     font-size: 18px;
-  }
-
-  .purpose-steps {
-    max-width: 340px;
   }
 
   .reach-form {
