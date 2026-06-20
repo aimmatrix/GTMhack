@@ -89,8 +89,17 @@
         <section class="reach-workspace dashboard-view is-active" aria-labelledby="dashboard-title" data-view-panel="matches">
           <div class="workspace-heading">
             <p>Find Matches</p>
-            <h1 id="dashboard-title">Who should we reach first?</h1>
+            <h1 id="dashboard-title" data-dashboard-title>Who should we reach first?</h1>
           </div>
+
+          <section class="run-summary" data-run-summary hidden aria-live="polite">
+            <div>
+              <small>Noodle is working on</small>
+              <h2 data-run-target>Pre-seed investors in London who back AI sales tools</h2>
+              <p data-run-message>Finding the strongest matches and context for Lightfern.</p>
+            </div>
+            <button type="button" data-refine-search>Refine search</button>
+          </section>
 
           <form class="reach-builder" data-reach-builder>
             <label class="reach-input reach-input-primary">

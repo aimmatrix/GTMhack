@@ -260,6 +260,11 @@ function setStatus(message) {
   const statusNode = $("[data-brief-status]");
   if (statusNode) statusNode.textContent = message;
 
+  const runMessage = $("[data-run-message]");
+  if (runMessage && message) {
+    runMessage.textContent = message.endsWith(".") ? message : `${message}...`;
+  }
+
   const greeting = $("[data-assistant-greeting]");
   if (greeting && message) {
     greeting.textContent = message.endsWith(".") ? message : `${message}...`;
@@ -317,6 +322,35 @@ function shouldAutoRun() {
   return params.get("run") === "1" || Boolean(params.get("target")?.trim());
 }
 
+function setWorkingMode(active) {
+  const form = $("[data-reach-builder]");
+  const summary = $("[data-run-summary]");
+  const title = $("[data-dashboard-title]");
+  const values = formValues();
+
+  if (summary) {
+    summary.hidden = !active;
+  }
+
+  if (form) {
+    form.hidden = active;
+  }
+
+  const targetNode = $("[data-run-target]");
+  if (targetNode) targetNode.textContent = values.target;
+
+  const messageNode = $("[data-run-message]");
+  if (messageNode) {
+    messageNode.textContent = active
+      ? "Finding the strongest matches and context for Lightfern."
+      : "Adjust the target or add more context before Noodle runs again.";
+  }
+
+  if (title) {
+    title.textContent = active ? "Noodle is on it." : "Refine the reach.";
+  }
+}
+
 function hydrateSeedTarget() {
   const target = getSeedTarget();
   if (!target) return false;
@@ -333,6 +367,7 @@ function hydrateSeedTarget() {
   if (input) input.placeholder = "What do you want to talk to them about?";
 
   setActiveNav("matches");
+  setWorkingMode(shouldAutoRun());
   syncBrief(shouldAutoRun() ? "Finding matches" : "Ready to run");
 
   const sidebarStatus = $("[data-sidebar-status]");
@@ -360,6 +395,7 @@ async function runReachSearch({ fallback = true } = {}) {
   const values = formValues();
   if (!values.target) return;
 
+  setWorkingMode(true);
   clearPackets();
   showSearching();
   setActiveNav("matches");
@@ -417,6 +453,11 @@ async function runReachSearch({ fallback = true } = {}) {
       greeting.textContent = `i built research context for "${values.target}". choose a packet and Lightfern can draft from it.`;
     }
 
+    const messageNode = $("[data-run-message]");
+    if (messageNode) {
+      messageNode.textContent = "Packet previews are ready. Pick one when you want Lightfern to draft.";
+    }
+
     const sidebarStatus = $("[data-sidebar-status]");
     if (sidebarStatus) sidebarStatus.textContent = "2 packet previews ready for Lightfern handoff.";
   }
@@ -467,6 +508,12 @@ $$("[data-source-chip]").forEach((button) => {
 
 $("[data-toggle-assistant]")?.addEventListener("click", () => {
   setAssistantCollapsed(!document.body.classList.contains("chat-collapsed"));
+});
+
+$("[data-refine-search]")?.addEventListener("click", () => {
+  setWorkingMode(false);
+  syncBrief("Ready to refine");
+  $("[data-reach-builder] [name='target']")?.focus();
 });
 
 $("[data-reach-builder]")?.addEventListener("input", () => {

@@ -509,6 +509,58 @@ body.chat-collapsed .dashboard-shell {
   margin-bottom: 18px;
 }
 
+.run-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: center;
+  max-width: 690px;
+  margin-bottom: 18px;
+  padding: 18px;
+  border: 1px solid rgba(123, 108, 255, 0.22);
+  border-radius: 10px;
+  background: linear-gradient(135deg, #fff, #f5f3ff);
+  box-shadow: 0 1px 2px rgba(21, 25, 34, 0.04);
+}
+
+.run-summary[hidden] {
+  display: none;
+}
+
+.run-summary small {
+  color: #8175ff;
+  font-size: 12px;
+  font-weight: 850;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.run-summary h2 {
+  margin: 5px 0 0;
+  color: #24262c;
+  font-size: 21px;
+  line-height: 1.18;
+}
+
+.run-summary p {
+  margin: 7px 0 0;
+  color: #646b75;
+  font-size: 14px;
+  line-height: 1.38;
+}
+
+.run-summary button {
+  min-height: 38px;
+  padding: 0 13px;
+  border: 1px solid rgba(123, 108, 255, 0.28);
+  border-radius: 8px;
+  background: #fff;
+  color: #4c42c8;
+  font-size: 13px;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
 .reach-input {
   display: grid;
   gap: 8px;
@@ -1066,6 +1118,7 @@ body.chat-collapsed .assistant-rail img {
   }
 
   .reach-builder,
+  .run-summary,
   .brief-panel,
   .packet-section,
   .handoff-strip {
@@ -1157,9 +1210,14 @@ body.chat-collapsed .assistant-rail img {
   }
 
   .reach-builder,
+  .run-summary,
   .brief-grid,
   .handoff-strip {
     grid-template-columns: 1fr;
+  }
+
+  .run-summary {
+    align-items: start;
   }
 
   .brief-panel,
