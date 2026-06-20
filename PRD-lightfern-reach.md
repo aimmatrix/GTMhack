@@ -1,20 +1,20 @@
 # PRD — Lightfern Reach
 
 **Working title:** Lightfern Reach (rename freely)
-**One-liner:** A Chrome extension where you describe what you're looking for — an ideal customer, investor, startup, or local business — and it searches the web to find matching people/businesses, uses AI to generate notes and a tailored angle, feeds that into Lightfern's auto-completion, then writes and sends a recommendation email **in your own voice**.
+**One-liner:** A web app where you describe what you're looking for — an ideal customer, investor, startup, or local business — and it searches the web to find matching people/businesses, uses AI to generate notes and a tailored angle, feeds that into Lightfern's auto-completion, then writes and sends a recommendation email **in your own voice**.
 **Author:** Ammad
 **Date:** 2026-06-20
-**Status:** Draft v2 — original concept + Personality feature (per direction to revert and keep the voice feature)
+**Status:** Draft v3 — web app (pivoted from the Chrome-extension concept; Personality / Voice feature kept as the differentiator)
 **For:** Lightfern GTM Hackathon (London, by Cursor × GTMengineer.dev × Lightfern)
-**Note:** This is the original concept by choice. Council-flagged risks (auto-send / Tavily-as-matcher) are recorded in §12 with light hackathon mitigations, but the core flow is kept as originally designed.
+**Note:** Delivered as a hosted web application (sign in, run, review, send — all in the browser, no install). Council-flagged risks (auto-send / Tavily-as-matcher) are recorded in §12 with light hackathon mitigations, but the core flow is kept as originally designed.
 
 ---
 
 ## 1. Concept
 
-You type what you're looking for. Lightfern Reach finds it, researches it, drafts a personalized email, and sends it — without you leaving the browser. The differentiator is the **Personality / Voice Profile**: every email is written in *your* tone, not the generic ChatGPT register.
+You open the app, type what you're looking for, and Lightfern Reach finds it, researches it, drafts a personalized email, and sends it — all from one screen. The differentiator is the **Personality / Voice Profile**: every email is written in *your* tone, not the generic ChatGPT register.
 
-**The flow (original):**
+**The flow:**
 ```
 Input (what you're looking for)
    → Tavily search finds matching people / businesses
@@ -23,6 +23,8 @@ Input (what you're looking for)
    → AI generates the recommendation email — IN YOUR VOICE (Voice Profile)
    → email is sent to the matched person
 ```
+
+Delivering this as a web app (rather than a browser extension) removes install/sideload friction, gives us a real screen for the results dashboard and Voice Profile editor, and lets the whole multi-step pipeline run server-side without the Manifest V3 service-worker time limit.
 
 ---
 
@@ -33,14 +35,14 @@ Input (what you're looking for)
 - G2 — Generate useful notes + basic info + a tailored angle for each match via AI.
 - G3 — Run those notes through Lightfern auto-completion to complete the record and assist email drafting.
 - G4 — Draft and send a recommendation email per match, written in the user's own voice (Voice Profile).
-- G5 — Demo the full arc — input → match → notes → Lightfern completion → voiced email → sent — end to end.
+- G5 — Demo the full arc — input → match → notes → Lightfern completion → voiced email → sent — end to end, live in the browser.
 
 ### Non-goals (hackathon)
 - NG1 — Multi-touch sequencing / drip campaigns / A/B testing.
 - NG2 — Building our own contact database (Tavily + Lightfern supply discovery/completion).
 - NG3 — Deliverability infrastructure (domain warming, SPF/DKIM/DMARC) — we send through the user's own Gmail.
 - NG4 — CRM sync, team accounts, analytics dashboards.
-- NG5 — Chrome Web Store publication (sideloaded for the demo).
+- NG5 — Native mobile apps (the web app is responsive; mobile-native is out of scope).
 
 ---
 
@@ -55,7 +57,7 @@ The product accepts any of four "what are you looking for" modes; the pipeline i
 | **Startup** | "Seed-stage AI compliance startups in London" | BD / partnerships / competitor scout | Partnership / collab |
 | **Local business** | "Independent coffee shops in Shoreditch without a modern website" | Agency / freelancer | Service pitch |
 
-Primary persona is the **solo / early-stage founder or operator** who works in Chrome + Gmail, has no enterprise sales stack, and needs a small number of high-quality, personalized emails.
+Primary persona is the **solo / early-stage founder or operator** who lives in the browser + Gmail, has no enterprise sales stack, and needs a small number of high-quality, personalized emails.
 
 ---
 
@@ -63,16 +65,19 @@ Primary persona is the **solo / early-stage founder or operator** who works in C
 
 ```
 First run (one-time):
-  Create your Voice Profile (Personality) → done.
+  1. Sign in (Google sign-in; same account used for Gmail send).
+  2. Create your Voice Profile (Personality) → done.
 
 Every run:
-  1. Open extension → pick input type → type what you're looking for
+  1. Open the app → pick input type → type what you're looking for
   2. Tavily search → returns candidate people / businesses matching the criteria
   3. AI (Gemini/OpenAI) → per match: summary, basic info, a tailored angle/idea
   4. Lightfern auto-completion → completes the record + assists drafting
   5. AI → generates the recommendation email, written in the selected Voice Profile
   6. Email is sent to the matched person (see §12 for the review-vs-auto-send toggle)
 ```
+
+The results dashboard renders one card per match and streams them in as the pipeline finishes each, so the user sees progress instead of a spinner.
 
 ---
 
@@ -156,45 +161,48 @@ TASK: Write a {length-from-tone}-word email. Lead with the tailored angle. One c
 | F5 | **Voice Profile** — §5. | P0 |
 | F6 | **Email generation (LLM)** — subject + body, written in the selected Voice Profile. | P0 |
 | F7 | **Send** — send the email to the matched person (via the user's Gmail). See §12 toggle. | P0 |
-| F8 | **Results view** — list of match cards: basic info, notes, source links, the generated email. | P0 |
+| F8 | **Results dashboard** — list of match cards: basic info, notes, source links, the generated email; streams in as each match finishes. | P0 |
 | F9 | **Empty/low-confidence state** — honest "no strong matches" rather than padded results. | P1 |
 | F10 | **Compliance footer** — sender identity + opt-out line appended on send. | P1 |
 | F11 | **Multiple Voice Profiles + per-run picker.** | P1 |
+| F12 | **Auth** — Google sign-in; gates the app and provides the Gmail send scope. | P1 |
 
 ---
 
 ## 7. Architecture
 
 ```
-┌─────────────────────┐     ┌──────────────────────────────┐     ┌────────────────┐
-│  Chrome Extension    │     │  Backend proxy (the brain)    │     │  External APIs  │
-│  (MV3, React)        │────▶│  - holds all API keys         │────▶│  Tavily (search)│
-│  - input + type      │     │  - orchestrates the pipeline  │     │  Gemini/OpenAI  │
-│  - Voice Profile UI  │     │  - search → notes → Lightfern │     │  Lightfern      │
-│  - results + email   │◀────│    → email                    │     │  Gmail API      │
-│  - send button       │     │  - stores VoiceProfiles+auth  │     └────────────────┘
-└─────────────────────┘     └──────────────────────────────┘
+┌──────────────────────────┐     ┌──────────────────────────────┐     ┌────────────────┐
+│  Web frontend            │     │  Backend / API routes         │     │  External APIs  │
+│  (Next.js + React)       │────▶│  - holds all API keys         │────▶│  Tavily (search)│
+│  - input + type picker   │     │  - orchestrates the pipeline  │     │  Gemini/OpenAI  │
+│  - Voice Profile editor  │     │  - search → notes → Lightfern │     │  Lightfern      │
+│  - results dashboard     │◀────│    → email (streamed)         │     │  Gmail API      │
+│  - send button           │     │  - stores VoiceProfiles+auth  │     └────────────────┘
+└──────────────────────────┘     └──────────────────────────────┘
+        single deployable (frontend + API in one Next.js app)
 ```
 
-**Why a backend:** keeps API keys off the client, and survives the Manifest V3 service-worker ~30s kill that would otherwise abort a multi-call pipeline. The extension is the UI; the backend does the work.
+**Why a server-side pipeline:** keeps API keys off the client, and runs the multi-call pipeline (search → notes → Lightfern → email) in one place with retries, per-call timeouts, and streaming — so one failed match doesn't kill the batch, and the user sees cards appear as they complete. Because it's a normal web server (not an MV3 service worker), there's no ~30s execution cap to design around.
 
 ### 7.1 Recommended stack (hackathon-fast)
-- **Extension:** Manifest V3, React + Vite, popup or side-panel UI.
-- **Backend:** Node/TS (Express or Next.js route handlers) — `/run`, `/voice-profiles`, `/extract-voice`, `/send`.
-- **LLM:** Gemini Flash or GPT-4o-mini class (cheap, fast).
-- **Send:** Gmail API via OAuth.
+- **Frontend + backend:** Next.js (App Router) — React UI + API route handlers in one app, deployed to Vercel.
+- **API routes:** `/api/run`, `/api/voice-profiles`, `/api/extract-voice`, `/api/send`.
+- **LLM:** Gemini Flash or GPT-4o-mini class (cheap, fast) — optionally via the Vercel AI SDK / AI Gateway for streaming + provider fallback.
+- **Storage:** Postgres (Vercel Marketplace) or a lightweight KV for Voice Profiles + sessions; browser `localStorage` is acceptable for the MVP.
+- **Auth + send:** Google sign-in (NextAuth/Auth.js) with a Gmail send scope; send via the Gmail API.
 
 ### 7.2 Endpoints
-- `POST /run` — `{ inputType, query, voiceProfileId }` → streams match cards (search → notes → Lightfern complete → email) as each finishes.
-- `GET/POST/PUT/DELETE /voice-profiles` — CRUD for Personalities.
-- `POST /extract-voice` — `{ sampleEmails[] }` → inferred `style_markers` + dial suggestions.
-- `POST /send` — `{ matchId, subject, body }` → sends via the user's Gmail.
+- `POST /api/run` — `{ inputType, query, voiceProfileId }` → streams match cards (search → notes → Lightfern complete → email) as each finishes.
+- `GET/POST/PUT/DELETE /api/voice-profiles` — CRUD for Personalities.
+- `POST /api/extract-voice` — `{ sampleEmails[] }` → inferred `style_markers` + dial suggestions.
+- `POST /api/send` — `{ matchId, subject, body }` → sends via the user's Gmail.
 
 ---
 
 ## 8. Non-functional requirements
 
-- **Security:** No API key ships in the extension bundle; all third-party calls go through the backend. Gmail OAuth scoped to send.
+- **Security:** No API key reaches the browser; all third-party calls go through the server. Gmail OAuth scoped to send only; sessions are server-validated.
 - **Reliability:** Pipeline runs server-side with retries + per-call timeouts; results stream in so one failed match doesn't kill the batch.
 - **Cost control:** Cap matches per run (default 25); cap Tavily calls; cache where safe. Show the count before running.
 - **Latency:** Stream results as they complete; first card in a few seconds, not after the whole batch.
@@ -204,16 +212,16 @@ TASK: Write a {length-from-tone}-word email. Lead with the tailored angle. One c
 ## 9. Hackathon scope: MVP vs cut
 
 **Must-have (P0):** F1–F8 + Voice Profile (§5).
-**Nice-to-have (P1):** F9 empty-state, F10 footer, F11 multiple profiles, "Sound like me" extraction.
+**Nice-to-have (P1):** F9 empty-state, F10 footer, F11 multiple profiles, F12 auth, "Sound like me" extraction.
 **Cut freely:** sequencing, CSV export, learn-from-edits.
 
 ---
 
 ## 10. Demo script (target < 90s)
 
-1. Show my saved **Voice Profile** (founder-to-founder, brief, warm).
+1. Open the web app and show my saved **Voice Profile** (founder-to-founder, brief, warm).
 2. Pick input type **Investor**, type: *"Pre-seed investors backing vertical SaaS in logistics, £100k–£500k, UK/EU."*
-3. Watch match cards stream: Tavily finds partners, AI writes notes + an angle, Lightfern completes the record.
+3. Watch match cards stream onto the dashboard: Tavily finds partners, AI writes notes + an angle, Lightfern completes the record.
 4. Open a generated email — it uses the angle **and sounds like me**.
 5. Swap to "Polished professional" profile → regenerate → visibly different tone. (The wow.)
 6. Click **Send** → it goes out through my Gmail. Done.
@@ -222,7 +230,7 @@ TASK: Write a {length-from-tone}-word email. Lead with the tailored angle. One c
 
 ## 11. Success metrics
 
-**Hackathon:** full input → match → notes → Lightfern completion → voiced email → sent runs live; the Voice Profile swap visibly changes the same email; Lightfern's auto-completion is visibly part of the pipeline.
+**Hackathon:** full input → match → notes → Lightfern completion → voiced email → sent runs live in the browser; the Voice Profile swap visibly changes the same email; Lightfern's auto-completion is visibly part of the pipeline.
 
 **Product (if continued):** reply rate vs a generic-template control; % of emails sent with ≤1 edit.
 
@@ -234,10 +242,10 @@ These were flagged by the `/council` review. The core flow is kept by choice; mi
 
 | Risk | Light mitigation (optional) |
 |---|---|
-| **Auto-send to a stranger** is distrusted and raises GDPR/PECR + Chrome-Store concerns | Offer a **"review before send" toggle** (default on for real use, off for the demo). Keep the compliance footer (F10). |
+| **Auto-send to a stranger** is distrusted and raises GDPR/PECR concerns | Offer a **"review before send" toggle** (default on for real use, off for the demo). Keep the compliance footer (F10). |
 | **Tavily isn't a contact database** — match quality varies, emails may be missing/guessed | Use Lightfern auto-completion to fill/verify contact fields; show source links per card; honest empty-state (F9). |
 | **Hallucinated facts** in notes/email | AC5: email uses only the generated notes; show the source so the user can sanity-check before send. |
-| **Gmail send** restricted-scope + sideloaded-extension OAuth friction | For the demo, consider **"create a Gmail draft"** instead of live send, or a single pre-authorized test account. |
+| **Gmail send** restricted-scope OAuth verification friction | For the demo, consider **"create a Gmail draft"** instead of live send, or a single pre-authorized test account. |
 | **Per-run cost** unbounded on broad queries | Hard cap matches per run (default 25); cap Tavily/LLM calls. |
 
 ---
@@ -245,8 +253,8 @@ These were flagged by the `/council` review. The core flow is kept by choice; mi
 ## 13. Open questions
 
 1. **Send vs review** — default to auto-send (original), or ship the review toggle on?
-2. **Send mechanism** — Gmail API live send vs. create a Gmail draft (lower OAuth friction).
-3. **Voice Profile storage** — backend (survives device) vs. local extension storage (simpler). Default: local for MVP.
+2. **Send mechanism** — Gmail API live send vs. create a Gmail draft (lower OAuth-verification friction).
+3. **Voice Profile storage** — server DB (survives device, ties to the signed-in account) vs. browser `localStorage` (simpler). Default: `localStorage` for MVP, DB if auth lands.
 4. **Lightfern access** — confirm whether we hit Lightfern via MCP tools or REST, and what auth the hackathon provides.
 
 ---
