@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>nuudle × Lightfern — Video Slides</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #111;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    /* ---- NAV ---- */
+    .nav {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 6px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 40px;
+      padding: 6px 8px;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+    }
+
+    .nav button {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.4);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .nav button:hover { color: rgba(255,255,255,0.7); }
+    .nav button.active {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+    }
+
+    .fullscreen-hint {
+      position: fixed;
+      top: 16px;
+      right: 20px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.25);
+      z-index: 100;
+      letter-spacing: 0.03em;
+    }
+
+    .fullscreen-hint kbd {
+      background: rgba(255,255,255,0.08);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: inherit;
+    }
+
+    /* ---- SLIDES ---- */
+    .slide {
+      position: fixed;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: #06060a;
+    }
+
+    .slide.active { display: flex; }
+
+    .grain {
+      position: absolute;
+      inset: 0;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .glow-orb {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(106,46,255,0.14) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .slide-inner {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ---- LOGO ---- */
+    .nuudle-logo {
+      height: 72px;
+      filter: drop-shadow(0 0 60px rgba(106,46,255,0.25));
+    }
+
+    .nuudle-logo-sm {
+      height: 44px;
+      filter: drop-shadow(0 0 40px rgba(106,46,255,0.2));
+    }
+
+    .thin-line {
+      width: 48px;
+      height: 1px;
+      background: rgba(255,255,255,0.08);
+      margin: 22px 0;
+    }
+
+    /* ---- SLIDE 1: OPENING ---- */
+    .brand-sub {
+      font-size: 15px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    /* ---- SLIDE 2: PROBLEM STAT ---- */
+    .stat-number {
+      font-size: 120px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+
+    .stat-unit {
+      color: rgba(255,255,255,0.2);
+      font-weight: 400;
+      font-size: 72px;
+    }
+
+    .stat-label {
+      font-size: 18px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.35);
+      margin-top: 18px;
+      letter-spacing: 0.01em;
+    }
+
+    /* ---- SLIDE 3: THE FLIP ---- */
+    .flip-text {
+      font-size: 40px;
+      font-weight: 500;
+      color: #ffffff;
+      letter-spacing: -0.02em;
+      text-align: center;
+      line-height: 1.45;
+    }
+
+    .flip-highlight {
+      color: #6a2eff;
+    }
+
+    /* ---- SLIDE 4: OVERLAY ---- */
+    .overlay-text {
+      font-size: 16px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.45);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    .powered-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .powered-x {
+      font-size: 18px;
+      color: rgba(255,255,255,0.18);
+    }
+
+    .powered-lf {
+      font-size: 28px;
+      font-weight: 600;
+      color: #ffffff;
+      letter-spacing: -0.02em;
+    }
+
+    /* ---- SLIDE 5: THREE LINES ---- */
+    .close-lines {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .close-line {
+      font-size: 32px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.2);
+      letter-spacing: -0.01em;
+    }
+
+    .close-line.lit { color: #ffffff; }
+    .your-accent { color: #6a2eff; }
+
+    /* ---- SLIDE 6: FINAL CARD ---- */
+    .tagline-text {
+      font-size: 36px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.8);
+      letter-spacing: -0.02em;
+      text-align: center;
+      line-height: 1.5;
+      margin-bottom: 36px;
+    }
+
+    .tag-italic {
+      font-style: italic;
+      color: #ffffff;
+    }
+
+    .logo-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .logo-row .x {
+      color: rgba(255,255,255,0.18);
+      font-size: 18px;
+    }
+
+    .logo-row .lf-name {
+      font-size: 26px;
+      font-weight: 600;
+      color: #ffffff;
+      letter-spacing: -0.02em;
+    }
+
+    .url {
+      font-size: 14px;
+      color: rgba(255,255,255,0.22);
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body>
+
+  <p class="fullscreen-hint">Press <kbd>F</kbd> for fullscreen &middot; <kbd>&larr;</kbd> <kbd>&rarr;</kbd> to navigate</p>
+
+  <!-- SLIDE 1: OPENING -->
+  <div class="slide active" id="s1">
+    <div class="grain"></div>
+    <div class="glow-orb"></div>
+    <div class="slide-inner">
+      <img class="nuudle-logo" src="../ChatGPT%20Image%20Jun%2020%2C%202026%2C%2003_49_02%20PM.png" alt="nuudle" />
+      <div class="thin-line"></div>
+      <p class="brand-sub">Powered by Lightfern</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: THE PROBLEM -->
+  <div class="slide" id="s2">
+    <div class="grain"></div>
+    <div class="slide-inner">
+      <p class="stat-number">2<span class="stat-unit">%</span></p>
+      <p class="stat-label">average cold outreach reply rate</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: THE FLIP -->
+  <div class="slide" id="s3">
+    <div class="grain"></div>
+    <div class="glow-orb"></div>
+    <div class="slide-inner">
+      <p class="flip-text">What if you knew <span class="flip-highlight">exactly</span><br/>what to say?</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: PERSONALISED OVERLAY -->
+  <div class="slide" id="s4">
+    <div class="grain"></div>
+    <div class="slide-inner">
+      <p class="overlay-text">Personalised outreach</p>
+      <div class="powered-row">
+        <img class="nuudle-logo-sm" src="../ChatGPT%20Image%20Jun%2020%2C%202026%2C%2003_49_02%20PM.png" alt="nuudle" />
+        <span class="powered-x">&times;</span>
+        <span class="powered-lf">Lightfern</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: CLOSING LINES -->
+  <div class="slide" id="s5">
+    <div class="grain"></div>
+    <div class="slide-inner">
+      <div class="close-lines">
+        <p class="close-line lit">Find the right people.</p>
+        <p class="close-line lit">Say the right thing.</p>
+        <p class="close-line lit">In <span class="your-accent">your</span> voice.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: FINAL CARD -->
+  <div class="slide" id="s6">
+    <div class="grain"></div>
+    <div class="glow-orb"></div>
+    <div class="slide-inner">
+      <p class="tagline-text">From your first client<br/>to your <span class="tag-italic">next hundred.</span></p>
+      <div class="logo-row">
+        <img class="nuudle-logo-sm" src="../ChatGPT%20Image%20Jun%2020%2C%202026%2C%2003_49_02%20PM.png" alt="nuudle" />
+        <span class="x">&times;</span>
+        <span class="lf-name">Lightfern</span>
+      </div>
+      <span class="url">nuudle.io</span>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <button class="active" data-slide="1">Opening</button>
+    <button data-slide="2">2%</button>
+    <button data-slide="3">The flip</button>
+    <button data-slide="4">Powered by</button>
+    <button data-slide="5">Three lines</button>
+    <button data-slide="6">Final</button>
+  </nav>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const buttons = document.querySelectorAll('.nav button');
+    let current = 1;
+
+    function goTo(n) {
+      if (n < 1 || n > slides.length) return;
+      current = n;
+      slides.forEach(s => s.classList.remove('active'));
+      buttons.forEach(b => b.classList.remove('active'));
+      document.getElementById('s' + n).classList.add('active');
+      document.querySelector('[data-slide="' + n + '"]').classList.add('active');
+    }
+
+    buttons.forEach(b => {
+      b.addEventListener('click', () => goTo(parseInt(b.dataset.slide)));
+    });
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goTo(current + 1); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(current - 1); }
+      if (e.key === 'f' || e.key === 'F') {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen();
+        } else {
+          document.exitFullscreen();
+        }
+      }
+    });
+  </script>
+</body>
+</html>
