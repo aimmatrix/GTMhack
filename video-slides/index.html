@@ -11,10 +11,11 @@
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      background: #111;
+      background: #06060a;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       color: #fff;
       min-height: 100vh;
+      overflow: hidden;
     }
 
     /* ---- NAV ---- */
@@ -99,9 +100,15 @@
       background: radial-gradient(circle, rgba(106,46,255,0.14) 0%, transparent 70%);
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%) scale(0.6);
       pointer-events: none;
       z-index: 1;
+      opacity: 0;
+      transition: none;
+    }
+
+    .slide.active .glow-orb {
+      animation: glowIn 2s ease-out forwards, glowPulse 4s ease-in-out 2s infinite;
     }
 
     .slide-inner {
@@ -112,7 +119,69 @@
       align-items: center;
     }
 
-    /* ---- LOGO ---- */
+    /* ---- ANIMATIONS ---- */
+    @keyframes glowIn {
+      from { opacity: 0; transform: translate(-50%, -50%) scale(0.4); }
+      to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
+
+    @keyframes glowPulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+      50%      { transform: translate(-50%, -50%) scale(1.15); opacity: 0.7; }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.85); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes lineGrow {
+      from { width: 0; opacity: 0; }
+      to   { width: 48px; opacity: 1; }
+    }
+
+    @keyframes countUp {
+      from { opacity: 0; transform: scale(0.7); filter: blur(8px); }
+      to   { opacity: 1; transform: scale(1); filter: blur(0); }
+    }
+
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-30px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(30px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* All animated elements start hidden */
+    .anim { opacity: 0; }
+    .slide.active .anim { animation-fill-mode: forwards; }
+
+    /* ---- SLIDE 1: OPENING ---- */
+    .slide.active .anim-logo {
+      animation: scaleIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+    }
+
+    .slide.active .anim-line {
+      animation: lineGrow 0.8s ease-out 1.4s forwards;
+    }
+
+    .slide.active .anim-sub {
+      animation: fadeUp 0.8s ease-out 1.8s forwards;
+    }
+
     .nuudle-logo {
       height: 72px;
       filter: drop-shadow(0 0 60px rgba(106,46,255,0.25));
@@ -130,7 +199,6 @@
       margin: 22px 0;
     }
 
-    /* ---- SLIDE 1: OPENING ---- */
     .brand-sub {
       font-size: 15px;
       font-weight: 400;
@@ -140,6 +208,14 @@
     }
 
     /* ---- SLIDE 2: PROBLEM STAT ---- */
+    .slide.active .anim-stat {
+      animation: countUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+    }
+
+    .slide.active .anim-stat-label {
+      animation: fadeUp 0.7s ease-out 0.8s forwards;
+    }
+
     .stat-number {
       font-size: 120px;
       font-weight: 700;
@@ -163,6 +239,10 @@
     }
 
     /* ---- SLIDE 3: THE FLIP ---- */
+    .slide.active .anim-flip {
+      animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+    }
+
     .flip-text {
       font-size: 40px;
       font-weight: 500;
@@ -177,6 +257,22 @@
     }
 
     /* ---- SLIDE 4: OVERLAY ---- */
+    .slide.active .anim-overlay-text {
+      animation: fadeIn 0.6s ease-out 0.2s forwards;
+    }
+
+    .slide.active .anim-logo-left {
+      animation: slideInLeft 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards;
+    }
+
+    .slide.active .anim-x {
+      animation: fadeIn 0.4s ease-out 1s forwards;
+    }
+
+    .slide.active .anim-logo-right {
+      animation: slideInRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) 1.1s forwards;
+    }
+
     .overlay-text {
       font-size: 16px;
       font-weight: 500;
@@ -205,6 +301,18 @@
     }
 
     /* ---- SLIDE 5: THREE LINES ---- */
+    .slide.active .anim-line1 {
+      animation: fadeUp 0.7s ease-out 0.2s forwards;
+    }
+
+    .slide.active .anim-line2 {
+      animation: fadeUp 0.7s ease-out 0.7s forwards;
+    }
+
+    .slide.active .anim-line3 {
+      animation: fadeUp 0.7s ease-out 1.2s forwards;
+    }
+
     .close-lines {
       display: flex;
       flex-direction: column;
@@ -215,14 +323,25 @@
     .close-line {
       font-size: 32px;
       font-weight: 500;
-      color: rgba(255,255,255,0.2);
+      color: #ffffff;
       letter-spacing: -0.01em;
     }
 
-    .close-line.lit { color: #ffffff; }
     .your-accent { color: #6a2eff; }
 
     /* ---- SLIDE 6: FINAL CARD ---- */
+    .slide.active .anim-tagline {
+      animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+    }
+
+    .slide.active .anim-logos {
+      animation: fadeUp 0.8s ease-out 1.1s forwards;
+    }
+
+    .slide.active .anim-url {
+      animation: fadeIn 0.6s ease-out 1.8s forwards;
+    }
+
     .tagline-text {
       font-size: 36px;
       font-weight: 500;
@@ -273,9 +392,9 @@
     <div class="grain"></div>
     <div class="glow-orb"></div>
     <div class="slide-inner">
-      <img class="nuudle-logo" src="../assets/nuudle-logo.png" alt="nuudle" />
-      <div class="thin-line"></div>
-      <p class="brand-sub">Powered by Lightfern</p>
+      <img class="nuudle-logo anim anim-logo" src="../assets/nuudle-logo.png" alt="nuudle" />
+      <div class="thin-line anim anim-line"></div>
+      <p class="brand-sub anim anim-sub">Powered by Lightfern</p>
     </div>
   </div>
 
@@ -283,8 +402,8 @@
   <div class="slide" id="s2">
     <div class="grain"></div>
     <div class="slide-inner">
-      <p class="stat-number">2<span class="stat-unit">%</span></p>
-      <p class="stat-label">average cold outreach reply rate</p>
+      <p class="stat-number anim anim-stat">2<span class="stat-unit">%</span></p>
+      <p class="stat-label anim anim-stat-label">average cold outreach reply rate</p>
     </div>
   </div>
 
@@ -293,7 +412,7 @@
     <div class="grain"></div>
     <div class="glow-orb"></div>
     <div class="slide-inner">
-      <p class="flip-text">What if you knew <span class="flip-highlight">exactly</span><br/>what to say?</p>
+      <p class="flip-text anim anim-flip">What if you knew <span class="flip-highlight">exactly</span><br/>what to say?</p>
     </div>
   </div>
 
@@ -301,11 +420,11 @@
   <div class="slide" id="s4">
     <div class="grain"></div>
     <div class="slide-inner">
-      <p class="overlay-text">Personalised outreach</p>
+      <p class="overlay-text anim anim-overlay-text">Personalised outreach</p>
       <div class="powered-row">
-        <img class="nuudle-logo-sm" src="../assets/nuudle-logo.png" alt="nuudle" />
-        <span class="powered-x">&times;</span>
-        <span class="powered-lf">Lightfern</span>
+        <img class="nuudle-logo-sm anim anim-logo-left" src="../assets/nuudle-logo.png" alt="nuudle" />
+        <span class="powered-x anim anim-x">&times;</span>
+        <span class="powered-lf anim anim-logo-right">Lightfern</span>
       </div>
     </div>
   </div>
@@ -315,9 +434,9 @@
     <div class="grain"></div>
     <div class="slide-inner">
       <div class="close-lines">
-        <p class="close-line lit">Find the right people.</p>
-        <p class="close-line lit">Say the right thing.</p>
-        <p class="close-line lit">In <span class="your-accent">your</span> voice.</p>
+        <p class="close-line anim anim-line1">Find the right people.</p>
+        <p class="close-line anim anim-line2">Say the right thing.</p>
+        <p class="close-line anim anim-line3">In <span class="your-accent">your</span> voice.</p>
       </div>
     </div>
   </div>
@@ -327,13 +446,13 @@
     <div class="grain"></div>
     <div class="glow-orb"></div>
     <div class="slide-inner">
-      <p class="tagline-text">From your first client<br/>to your <span class="tag-italic">next hundred.</span></p>
-      <div class="logo-row">
+      <p class="tagline-text anim anim-tagline">From your first client<br/>to your <span class="tag-italic">next hundred.</span></p>
+      <div class="logo-row anim anim-logos">
         <img class="nuudle-logo-sm" src="../assets/nuudle-logo.png" alt="nuudle" />
         <span class="x">&times;</span>
         <span class="lf-name">Lightfern</span>
       </div>
-      <span class="url">nuudle.io</span>
+      <span class="url anim anim-url">nuudle.io</span>
     </div>
   </div>
 
@@ -352,12 +471,28 @@
     const buttons = document.querySelectorAll('.nav button');
     let current = 1;
 
+    function resetAnimations(slide) {
+      slide.querySelectorAll('.anim').forEach(el => {
+        el.style.animation = 'none';
+        el.offsetHeight;
+        el.style.animation = '';
+      });
+      const orb = slide.querySelector('.glow-orb');
+      if (orb) {
+        orb.style.animation = 'none';
+        orb.offsetHeight;
+        orb.style.animation = '';
+      }
+    }
+
     function goTo(n) {
       if (n < 1 || n > slides.length) return;
       current = n;
       slides.forEach(s => s.classList.remove('active'));
       buttons.forEach(b => b.classList.remove('active'));
-      document.getElementById('s' + n).classList.add('active');
+      const target = document.getElementById('s' + n);
+      target.classList.add('active');
+      resetAnimations(target);
       document.querySelector('[data-slide="' + n + '"]').classList.add('active');
     }
 
@@ -376,6 +511,8 @@
         }
       }
     });
+
+    resetAnimations(document.getElementById('s1'));
   </script>
 </body>
 </html>
