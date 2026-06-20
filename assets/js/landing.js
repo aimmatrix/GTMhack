@@ -223,59 +223,22 @@ function createPrism(container, ogl) {
   io.observe(container);
 }
 
-const drafts = {
-  founder: {
-    subject: "Why Northstar should care",
-    body:
-      "Northstar backs workflow software for operational teams. This packet frames Noodle as a lighter way to turn field notes, source links, and founder context into outreach-ready material for Lightfern."
-  },
-  polished: {
-    subject: "Customer reach angle",
-    body:
-      "Target operators who already collect messy notes across calls, field visits, and CRMs. Noodle prepares the match rationale, useful sources, and outreach context before Lightfern drafts the final email."
-  }
-};
-
-const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
+const $ = (selector) => document.querySelector(selector);
 
-function setVoice(voice) {
-  const draft = drafts[voice];
-  if (!draft) return;
+const observer = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
+      }
+    });
+  },
+  { threshold: 0.16 }
+);
 
-  $$("[data-voice]").forEach((button) => {
-    button.classList.toggle("is-active", button.dataset.voice === voice);
-  });
-
-  const subject = $("[data-draft-subject]");
-  const body = $("[data-draft-body]");
-  if (subject) subject.textContent = draft.subject;
-  if (body) body.textContent = draft.body;
-}
-
-function updateCountdown() {
-  const now = new Date();
-  const end = new Date(now);
-  end.setHours(23, 59, 59, 999);
-  let diff = Math.max(0, end - now);
-
-  const hours = String(Math.floor(diff / 3600000)).padStart(2, "0");
-  diff %= 3600000;
-  const minutes = String(Math.floor(diff / 60000)).padStart(2, "0");
-  diff %= 60000;
-  const seconds = String(Math.floor(diff / 1000)).padStart(2, "0");
-
-  const hourNode = $("[data-hours]");
-  const minuteNode = $("[data-minutes]");
-  const secondNode = $("[data-seconds]");
-  if (hourNode) hourNode.textContent = hours;
-  if (minuteNode) minuteNode.textContent = minutes;
-  if (secondNode) secondNode.textContent = seconds;
-}
-
-$$("[data-voice]").forEach((button) => {
-  button.addEventListener("click", () => setVoice(button.dataset.voice));
-});
+$$("[data-reveal]").forEach((node) => observer.observe(node));
 
 $("[data-reach-form]")?.addEventListener("submit", (event) => {
   const input = event.currentTarget.elements.target;
@@ -294,20 +257,4 @@ $("[data-reach-form]")?.addEventListener("submit", (event) => {
   }
 });
 
-const observer = new IntersectionObserver(
-  (entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("is-visible");
-        observer.unobserve(entry.target);
-      }
-    });
-  },
-  { threshold: 0.16 }
-);
-
-$$("[data-reveal]").forEach((node) => observer.observe(node));
-
-updateCountdown();
-setInterval(updateCountdown, 1000);
 initPrism();
