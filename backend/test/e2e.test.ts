@@ -68,6 +68,7 @@ describe.sequential('Lightfern Reach API (E2E, mock mode)', () => {
 
     expect(runRes.status).toBe(200);
     expect(runRes.headers.get('content-type')).toContain('text/event-stream');
+    expect(runRes.headers.get('access-control-allow-origin')).toBeTruthy();
 
     const raw = await runRes.text();
     const parsed = parseSSE(raw);

@@ -7,13 +7,14 @@ import { GmailClient } from './gmail';
 const log = logger('handoff');
 
 /**
- * Handoff layer: research packet → email draft.
+ * Handoff layer: research packet → Gmail context draft for Lightfern.
  *
- * The final step does NOT call Lightfern (no API). Instead it prepares an email
- * in the user's Gmail. When OAuth is configured we create a real Gmail draft;
+ * The final step does NOT call Lightfern (no API). Instead it prepares a Gmail
+ * draft filled with recipient context (role, company, background facts, outreach
+ * angle, sender goal). When OAuth is configured we create a real Gmail draft;
  * otherwise (or on any failure) we return a no-auth Gmail compose deep-link so
  * the demo always works. The user opens Gmail and runs the Lightfern extension
- * there to polish/send.
+ * there to write and send the email from that context.
  */
 export function createHandoffService(): HandoffService {
   return {
@@ -38,7 +39,7 @@ export function createHandoffService(): HandoffService {
             to,
             subject,
             body,
-            message: 'Draft created in Gmail — open it and run Lightfern.',
+            message: 'Context draft created in Gmail — open it and run Lightfern.',
           };
         } catch (err) {
           log.warn('gmail draft failed, falling back to compose link', (err as Error).message);
@@ -56,7 +57,7 @@ export function createHandoffService(): HandoffService {
           to,
           subject,
           body,
-          message: 'Opens a prefilled Gmail compose — run the Lightfern extension there.',
+          message: 'Opens Gmail with outreach context — run the Lightfern extension there.',
         };
       } catch (err) {
         // 3. Absolute last resort — still hand back the prepared draft.

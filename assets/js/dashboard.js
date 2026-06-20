@@ -6,7 +6,7 @@ import {
   showEmpty,
   renderPacket,
 } from "./cards.js";
-import "./handoff.js";
+import { seedSampleSender } from "./handoff.js";
 
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -14,9 +14,9 @@ const $$ = (selector) => Array.from(document.querySelectorAll(selector));
 const viewResponses = {
   matches: "tell me who you want to reach, and i will shape the search brief.",
   packets: "research packets are where match reasons, notes, angles, and sources stay tidy.",
-  drafts: "lightfern drafts start after the context packet is ready.",
+  drafts: "noodle drafts start after the outreach context is ready.",
   calendar: "reach calendar is ready. i saved your next outreach window for tomorrow morning.",
-  sources: "source library keeps the links i can cite before anything goes to lightfern.",
+  sources: "source library keeps the links i can cite before anything goes to noodle.",
   settings: "settings is where sender context, integrations, and handoff rules live.",
 };
 
@@ -75,7 +75,7 @@ function syncBrief(status = "Ready to run") {
   if (!form) return;
 
   const target = cleanValue(form.elements.target.value, "pre-seed investors in London");
-  const goal = cleanValue(form.elements.goal.value, "introduce our Lightfern hackathon workflow");
+  const goal = cleanValue(form.elements.goal.value, "introduce noodle's outreach workflow");
 
   const targetNode = $("[data-brief-target]");
   const goalNode = $("[data-brief-goal]");
@@ -119,7 +119,7 @@ function hydrateSeedTarget() {
 
   const greeting = $("[data-assistant-greeting]");
   if (greeting) {
-    greeting.textContent = `got it. i will turn "${target}" into a lightfern-ready reach packet.`;
+    greeting.textContent = `got it. i will turn "${target}" into a noodle-ready reach packet.`;
   }
 
   const input = $("[data-composer] input[name='message']");
@@ -132,6 +132,40 @@ function hydrateSeedTarget() {
   return true;
 }
 
+function setSampleQueriesDisabled(disabled) {
+  $$("[data-sample-query]").forEach((button) => {
+    button.disabled = disabled;
+  });
+}
+
+function setActiveSampleQuery(button) {
+  $$("[data-sample-query]").forEach((chip) => {
+    chip.classList.toggle("is-active", chip === button);
+  });
+}
+
+function applySampleQuery(button) {
+  const form = $("[data-reach-builder]");
+  if (!form || !button) return;
+
+  const target = button.dataset.sampleTarget?.trim();
+  if (!target) return;
+
+  form.elements.target.value = target;
+  form.elements.goal.value = button.dataset.sampleGoal?.trim() ?? "";
+  seedSampleSender(form.elements.goal.value);
+  setActiveSampleQuery(button);
+  syncBrief("Ready to run");
+  runReachSearch();
+}
+
+function friendlyFetchError(message) {
+  if (/failed to fetch/i.test(message ?? "")) {
+    return "Can't reach the API — start the backend on http://localhost:8787 (see RUN.md).";
+  }
+  return message;
+}
+
 async function runReachSearch() {
   const form = $("[data-reach-builder]");
   if (!form) return;
@@ -142,6 +176,7 @@ async function runReachSearch() {
 
   clearPackets();
   showSearching();
+  setSampleQueriesDisabled(true);
   setActiveNav("matches");
   setStatus("Building search brief");
 
@@ -171,16 +206,19 @@ async function runReachSearch() {
                 ? `i found ${stats.researched} strong direction${stats.researched === 1 ? "" : "s"} for "${targetValue}". the best packets are ready below.`
                 : `no strong matches yet for "${targetValue}". try refining the brief.`;
           }
+          setSampleQueriesDisabled(false);
         },
         onError: (message) => {
-          showEmpty(message);
+          showEmpty(friendlyFetchError(message));
           setStatus("Search failed");
+          setSampleQueriesDisabled(false);
         },
       },
     );
   } catch (err) {
-    showEmpty(err.message ?? "Something went wrong");
+    showEmpty(friendlyFetchError(err.message ?? "Something went wrong"));
     setStatus("Search failed");
+    setSampleQueriesDisabled(false);
   }
 }
 
@@ -201,7 +239,14 @@ $("[data-toggle-assistant]")?.addEventListener("click", () => {
   setAssistantCollapsed(!document.body.classList.contains("chat-collapsed"));
 });
 
-$("[data-reach-builder]")?.addEventListener("input", () => syncBrief());
+$("[data-reach-builder]")?.addEventListener("input", () => {
+  syncBrief();
+  setActiveSampleQuery(null);
+});
+
+$$("[data-sample-query]").forEach((button) => {
+  button.addEventListener("click", () => applySampleQuery(button));
+});
 
 $("[data-reach-builder]")?.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -229,7 +274,7 @@ $("[data-composer]")?.addEventListener("submit", (event) => {
   const greeting = $("[data-assistant-greeting]");
 
   if (greeting && value) {
-    greeting.textContent = `got it. i will turn "${value}" into a lightfern-ready reach packet.`;
+    greeting.textContent = `got it. i will turn "${value}" into a noodle-ready reach packet.`;
   }
 
   input.value = "";
@@ -244,3 +289,6 @@ if (hydrateSeedTarget()) {
 } else {
   syncBrief();
 }
+
+const reachGoal = $("[data-reach-builder]")?.elements.goal?.value;
+seedSampleSender(reachGoal?.trim());

@@ -4,10 +4,10 @@ const CONFIDENCE_LABELS = {
   low: "60% match",
 };
 
-const LIGHTFERN_LABELS = {
-  ready: "Lightfern ready",
-  partial: "Lightfern partial",
-  unavailable: "Lightfern unavailable",
+const NOODLE_LABELS = {
+  ready: "Noodle ready",
+  partial: "Noodle partial",
+  unavailable: "Noodle unavailable",
 };
 
 const SKELETON_COUNT = 3;
@@ -24,8 +24,8 @@ function confidenceLabel(confidence) {
   return CONFIDENCE_LABELS[confidence] ?? confidence ?? "Match";
 }
 
-function lightfernLabel(status) {
-  return LIGHTFERN_LABELS[status] ?? (status ? `Lightfern ${status}` : "Lightfern");
+function noodleLabel(status) {
+  return NOODLE_LABELS[status] ?? (status ? `Noodle ${status}` : "Noodle");
 }
 
 function formatRoleCompany(match = {}) {
@@ -172,7 +172,7 @@ export function renderPacket(card) {
   const completionStatus = card.lightfern?.completion_status;
   if (completionStatus) {
     const lfBadge = document.createElement("span");
-    lfBadge.textContent = lightfernLabel(completionStatus);
+    lfBadge.textContent = noodleLabel(completionStatus);
     lfBadge.style.padding = "5px 8px";
     lfBadge.style.borderRadius = "999px";
     lfBadge.style.background = completionStatus === "ready" ? "#ecfdf3" : "#fff7ed";
@@ -269,7 +269,7 @@ export function renderPacket(card) {
 
   const draftButton = document.createElement("button");
   draftButton.type = "button";
-  draftButton.textContent = "Draft in Lightfern";
+  draftButton.textContent = "Draft in Noodle";
   draftButton.addEventListener("click", () => {
     document.dispatchEvent(new CustomEvent("noodle:draft", { detail: card }));
   });

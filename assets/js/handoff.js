@@ -2,6 +2,13 @@ import { handoff } from "./api.js";
 
 const STORAGE_KEY = "noodle-sender";
 
+export const SAMPLE_SENDER = {
+  name: "Angela",
+  company: "Noodle",
+  whatYouDo: "CEO",
+  fromEmail: "angela@noodle.com",
+};
+
 const $ = (selector) => document.querySelector(selector);
 
 function loadSender() {
@@ -15,6 +22,13 @@ function loadSender() {
 
 function saveSender(sender) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(sender));
+}
+
+export function seedSampleSender(goal) {
+  saveSender({
+    ...SAMPLE_SENDER,
+    ...(goal ? { goal } : {}),
+  });
 }
 
 function escapeHtml(text) {
@@ -42,9 +56,9 @@ function showHandoffPreview(result) {
   }
 
   preview.innerHTML = `
-    <small style="display:block;margin-top:10px;color:var(--muted)">Subject</small>
+    <small style="display:block;margin-top:10px;color:var(--muted)">Gmail subject (placeholder)</small>
     <p style="margin:4px 0 0;font-size:13px;font-weight:650">${escapeHtml(result.subject)}</p>
-    <small style="display:block;margin-top:10px;color:var(--muted)">Draft preview</small>
+    <small style="display:block;margin-top:10px;color:var(--muted)">Context for Noodle</small>
     <pre style="margin:4px 0 0;padding:10px;border-radius:8px;background:var(--soft);white-space:pre-wrap;font:13px/1.4 var(--sans);color:#505762">${escapeHtml(result.body)}</pre>
   `;
 }
@@ -61,9 +75,10 @@ function readSenderForm(form) {
 }
 
 function fillSenderForm(form, sender = {}) {
+  const merged = { ...SAMPLE_SENDER, ...sender };
   for (const field of ["name", "company", "whatYouDo", "goal", "fromEmail"]) {
     const input = form.elements[field];
-    if (input && sender[field]) input.value = sender[field];
+    if (input && merged[field]) input.value = merged[field];
   }
 
   if (!form.elements.goal?.value) {
@@ -133,7 +148,7 @@ async function handleDraft(card) {
     setHandoffStatus("Collecting sender context…");
     const sender = await ensureSender();
 
-    setHandoffStatus("Creating Gmail draft…");
+    setHandoffStatus("Building outreach context for Noodle…");
     const result = await handoff({ packet: card, sender });
 
     setHandoffStatus(result.message);

@@ -6,7 +6,7 @@
     <title>Noodle - Reach Dashboard</title>
     <meta
       name="description"
-      content="Noodle helps you find the right people, prepare research context, and hand it to Lightfern for drafting."
+      content="Noodle helps you find the right people, prepare research context, and draft warm outreach."
     />
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%237b6cff'/%3E%3Ctext x='32' y='40' text-anchor='middle' font-family='Arial' font-size='24' font-weight='700' fill='white'%3EN%3C/text%3E%3C/svg%3E" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -41,7 +41,7 @@
           </button>
           <button class="nav-item" type="button" data-view="drafts">
             <i data-lucide="send" aria-hidden="true"></i>
-            <span>Lightfern Drafts</span>
+            <span>Noodle Drafts</span>
           </button>
           <button class="nav-item" type="button" data-view="calendar">
             <i data-lucide="calendar-days" aria-hidden="true"></i>
@@ -62,9 +62,9 @@
           <button class="dismiss-card" type="button" aria-label="Dismiss gift card">
             <i data-lucide="x" aria-hidden="true"></i>
           </button>
-          <div class="gift-icon" aria-hidden="true">LF</div>
+          <div class="gift-icon" aria-hidden="true">N</div>
           <h2>Invite a GTM Teammate</h2>
-          <p>Share 2 one-month Lightfern Reach trials with people building warm outbound.</p>
+          <p>Share 2 one-month Noodle Reach trials with people building warm outbound.</p>
           <button class="copy-code" type="button" data-copy-code>
             <span>ANGELA-GIFT</span>
             <i data-lucide="copy" aria-hidden="true"></i>
@@ -112,7 +112,7 @@
                 name="goal"
                 type="text"
                 autocomplete="off"
-                value="Introduce our Lightfern hackathon workflow"
+                value="Introduce Noodle's outreach workflow"
               />
             </label>
             <button class="primary-action" type="submit">
@@ -120,6 +120,52 @@
               <i data-lucide="arrow-right" aria-hidden="true"></i>
             </button>
           </form>
+
+          <section class="sample-queries" aria-label="Try a sample search">
+            <span class="sample-queries-label">Try a sample</span>
+            <div class="sample-query-list">
+              <button
+                type="button"
+                class="sample-query"
+                data-sample-query
+                data-sample-target="Pre-seed investors in London who back AI sales tools"
+                data-sample-goal="Introduce Noodle's outreach workflow"
+              >
+                <span class="sample-query-type">Investors</span>
+                <span class="sample-query-text">Pre-seed investors in London who back AI sales tools</span>
+              </button>
+              <button
+                type="button"
+                class="sample-query"
+                data-sample-query
+                data-sample-target="Head of Operations at UK logistics companies struggling with manual dispatch"
+                data-sample-goal="Pitch our ops automation platform"
+              >
+                <span class="sample-query-type">Customers</span>
+                <span class="sample-query-text">Ops leaders at UK logistics companies with manual dispatch pain</span>
+              </button>
+              <button
+                type="button"
+                class="sample-query"
+                data-sample-query
+                data-sample-target="Early-stage AI startups in London raising seed funding"
+                data-sample-goal="Offer a partnership on GTM research tooling"
+              >
+                <span class="sample-query-type">Startups</span>
+                <span class="sample-query-text">Early-stage AI startups in London raising seed</span>
+              </button>
+              <button
+                type="button"
+                class="sample-query"
+                data-sample-query
+                data-sample-target="Independent coffee shops in East London with outdated websites"
+                data-sample-goal="Offer a modern website and online ordering setup"
+              >
+                <span class="sample-query-type">Local</span>
+                <span class="sample-query-text">Independent coffee shops in East London needing a website refresh</span>
+              </button>
+            </div>
+          </section>
 
           <section class="brief-panel" aria-label="Search brief">
             <div class="panel-title">
@@ -137,11 +183,11 @@
               </div>
               <div>
                 <small>Goal</small>
-                <p data-brief-goal>introduce our Lightfern hackathon workflow</p>
+                <p data-brief-goal>introduce noodle's outreach workflow</p>
               </div>
               <div>
                 <small>Output</small>
-                <p>research packets for Lightfern drafting</p>
+                <p>research packets for Noodle drafting</p>
               </div>
             </div>
           </section>
@@ -159,10 +205,10 @@
                 </div>
                 <p>Pre-seed investor with workflow software and AI-enabled sales interest.</p>
                 <ul>
-                  <li>Angle: show how research packets improve Lightfern draft quality.</li>
+                  <li>Angle: show how research packets improve Noodle draft quality.</li>
                   <li>Sources: portfolio notes, partner posts, recent AI investment thesis.</li>
                 </ul>
-                <button type="button" data-send-packet="Northstar Ventures">Draft in Lightfern</button>
+                <button type="button" data-send-packet="Northstar Ventures">Draft in Noodle</button>
               </article>
 
               <article class="packet-card">
@@ -175,14 +221,14 @@
                   <li>Angle: position Noodle as the context layer before outbound drafting.</li>
                   <li>Sources: fund focus, founder resources, recent SaaS portfolio work.</li>
                 </ul>
-                <button type="button" data-send-packet="Seedcamp">Draft in Lightfern</button>
+                <button type="button" data-send-packet="Seedcamp">Draft in Noodle</button>
               </article>
             </div>
           </section>
 
-          <section class="handoff-strip" aria-label="Lightfern handoff status">
+          <section class="handoff-strip" aria-label="Noodle handoff status">
             <div>
-              <small>Lightfern handoff</small>
+              <small>Noodle handoff</small>
               <p>2 packets complete, 1 waiting on source verification</p>
             </div>
             <button type="button" data-view="drafts">Open drafts</button>
@@ -241,20 +287,20 @@
       <form class="sender-form" data-sender-form>
         <header class="sender-modal-header">
           <h2 id="sender-modal-title">Before your first draft</h2>
-          <p>Tell Lightfern who you are — we&apos;ll remember this for next time.</p>
+          <p>Tell Noodle who you are — we&apos;ll remember this for next time.</p>
         </header>
 
         <label class="reach-input">
           <span>Name</span>
-          <input name="name" type="text" autocomplete="name" required />
+          <input name="name" type="text" autocomplete="name" value="Angela" required />
         </label>
         <label class="reach-input">
           <span>Company</span>
-          <input name="company" type="text" autocomplete="organization" />
+          <input name="company" type="text" autocomplete="organization" value="Noodle" />
         </label>
         <label class="reach-input">
           <span>What you do</span>
-          <input name="whatYouDo" type="text" autocomplete="organization-title" />
+          <input name="whatYouDo" type="text" autocomplete="organization-title" value="CEO" />
         </label>
         <label class="reach-input">
           <span>Outreach goal</span>
@@ -262,12 +308,12 @@
         </label>
         <label class="reach-input">
           <span>From email</span>
-          <input name="fromEmail" type="email" autocomplete="email" required />
+          <input name="fromEmail" type="email" autocomplete="email" value="angela@noodle.com" required />
         </label>
 
         <footer class="sender-modal-actions">
           <button type="button" data-sender-cancel>Cancel</button>
-          <button class="primary-action" type="submit">Send context to Lightfern</button>
+          <button class="primary-action" type="submit">Send context to Noodle</button>
         </footer>
       </form>
     </dialog>

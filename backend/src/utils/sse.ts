@@ -8,12 +8,13 @@ import type { RunEvent } from '../types';
 export class SSEStream {
   private closed = false;
 
-  constructor(private reply: FastifyReply) {
+  constructor(private reply: FastifyReply, extraHeaders: Record<string, string> = {}) {
     reply.raw.writeHead(200, {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache, no-transform',
       Connection: 'keep-alive',
       'X-Accel-Buffering': 'no',
+      ...extraHeaders,
     });
     // Flush headers immediately.
     reply.raw.write(': connected\n\n');

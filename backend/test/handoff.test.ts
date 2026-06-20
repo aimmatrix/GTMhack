@@ -39,20 +39,21 @@ describe('buildEmailFromPacket', () => {
     vi.resetModules();
   });
 
-  it('includes packet-specific why_match, notes, and suggested_angle', async () => {
+  it('builds recipient context for Lightfern from the research packet', async () => {
     const { buildEmailFromPacket } = await import('../src/handoff/packet');
     const { subject, body } = buildEmailFromPacket(samplePacket, sampleSender);
 
-    expect(subject).toContain('Acme Corp');
+    expect(subject).toContain('Sarah Chen');
     expect(subject).toContain('Northwind Analytics');
-    expect(body).toContain('Hi Sarah,');
+    expect(body).toContain('Context for Lightfern');
+    expect(body).toContain('Sarah Chen is VP Partnerships at Northwind Analytics');
     expect(body).toContain('European markets');
-    expect(body).toContain('DACH partner rollout');
     expect(body).toContain('Series B');
+    expect(body).toContain('DACH partner rollout');
     expect(body).toContain('Alex Rivera');
     expect(body).toContain('Acme Corp');
-    expect(wordCount(body)).toBeGreaterThanOrEqual(80);
-    expect(wordCount(body)).toBeLessThanOrEqual(180);
+    expect(body).not.toContain('Hi Sarah,');
+    expect(body).not.toContain('Would you be open to');
   });
 });
 

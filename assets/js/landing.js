@@ -227,12 +227,12 @@ const drafts = {
   founder: {
     subject: "Why Northstar should care",
     body:
-      "Northstar backs workflow software for operational teams. This packet frames Noodle as a lighter way to turn field notes, source links, and founder context into outreach-ready material for Lightfern."
+      "Northstar backs workflow software for operational teams. This packet frames Noodle as a lighter way to turn field notes, source links, and founder context into outreach-ready material."
   },
   polished: {
     subject: "Customer reach angle",
     body:
-      "Target operators who already collect messy notes across calls, field visits, and CRMs. Noodle prepares the match rationale, useful sources, and outreach context before Lightfern drafts the final email."
+      "Target operators who already collect messy notes across calls, field visits, and CRMs. Noodle prepares the match rationale, useful sources, and outreach context before you draft the final email."
   }
 };
 

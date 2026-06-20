@@ -364,6 +364,73 @@ body.chat-collapsed .dashboard-shell {
   grid-column: 1 / -1;
 }
 
+.sample-queries {
+  display: grid;
+  gap: 10px;
+  max-width: 690px;
+  margin-bottom: 18px;
+}
+
+.sample-queries-label {
+  color: #8a9099;
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.sample-query-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sample-query {
+  display: grid;
+  gap: 2px;
+  max-width: 100%;
+  padding: 10px 13px;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  background: #fbfbfc;
+  color: #25272d;
+  text-align: left;
+  transition:
+    border-color 140ms ease,
+    background 140ms ease,
+    box-shadow 140ms ease;
+}
+
+.sample-query:hover {
+  border-color: rgba(123, 108, 255, 0.42);
+  background: #fff;
+}
+
+.sample-query.is-active {
+  border-color: rgba(123, 108, 255, 0.56);
+  background: var(--accent-soft);
+  box-shadow: 0 0 0 4px rgba(123, 108, 255, 0.1);
+}
+
+.sample-query:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+.sample-query-type {
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.sample-query-text {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
 .reach-input input:focus {
   border-color: rgba(123, 108, 255, 0.56);
   background: #fff;
@@ -531,6 +598,7 @@ body.chat-collapsed .dashboard-shell {
 
 .primary-action:focus-visible,
 .reach-input input:focus-visible,
+.sample-query:focus-visible,
 .nav-item:focus-visible,
 .round-button:focus-visible,
 .packet-card button:focus-visible,
@@ -983,7 +1051,7 @@ body.chat-collapsed .message-composer {
   line-height: 1.35;
 }
 
-/* Confidence + Lightfern badges */
+/* Confidence + Noodle badges */
 .packet-badges,
 .packet-topline > div:last-child:not(:only-child) {
   display: flex;
@@ -1127,7 +1195,7 @@ body.chat-collapsed .message-composer {
   color: #9f1239;
 }
 
-/* Handoff preview (after Draft in Lightfern) */
+/* Handoff preview (after Draft in Noodle) */
 [data-handoff-preview] {
   margin-top: 10px;
 }
