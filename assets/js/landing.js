@@ -226,6 +226,15 @@ function createPrism(container, ogl) {
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
 const $ = (selector) => document.querySelector(selector);
 
+const targetPrompts = [
+  "Peter at Stripe",
+  "CMOs at DTC brands",
+  "Heads of growth at fintech startups",
+  "Local coffee shops in Shoreditch",
+  "Investors who back AI sales tools",
+  "RevOps leaders at B2B SaaS companies"
+];
+
 const observer = new IntersectionObserver(
   (entries) => {
     entries.forEach((entry) => {
@@ -239,6 +248,18 @@ const observer = new IntersectionObserver(
 );
 
 $$("[data-reveal]").forEach((node) => observer.observe(node));
+
+const reachInput = $("[data-reach-form] input[name='target']");
+if (reachInput) {
+  let promptIndex = 0;
+  reachInput.placeholder = targetPrompts[promptIndex];
+
+  setInterval(() => {
+    if (document.activeElement === reachInput || reachInput.value.trim()) return;
+    promptIndex = (promptIndex + 1) % targetPrompts.length;
+    reachInput.placeholder = targetPrompts[promptIndex];
+  }, 2200);
+}
 
 $("[data-reach-form]")?.addEventListener("submit", (event) => {
   const button = event.currentTarget.querySelector("button[type='submit'] span");
@@ -257,7 +278,7 @@ $("[data-reach-form]")?.addEventListener("submit", (event) => {
     // The query string still carries the target when storage is unavailable.
   }
 
-  if (button) button.textContent = "Starting reach";
+  if (button) button.textContent = "Reaching out";
 });
 
 initPrism();
