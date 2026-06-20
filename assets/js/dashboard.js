@@ -2,13 +2,13 @@ const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
 
 const taskResponses = {
-  "connect-device": "your outreach source is connected. i can read target briefs and keep the handoff clean.",
-  "meet-noodle": "i am noodle. give me a messy target, and i will turn it into a sharp reach packet.",
-  "connect-lightfern": "lightfern is connected. when a match is ready, i will send context there for drafting.",
-  audit: "your target list has been audited. strongest signal: london operators, ai sales tools, and logistics buyers.",
-  skills: "skills loaded: find prospects, research context, verify sources, and hand off to lightfern.",
-  calendar: "reach calendar is ready. i saved your next outreach ritual for tomorrow morning.",
-  rituals: "hey angela. today's ritual is simple: describe who you want to reach, then let me prepare the context."
+  target: "start with a plain sentence: investors in london who back ai sales tools.",
+  goal: "tell me what you want to talk about, not the final email copy.",
+  brief: "i will turn the messy ask into a clean search brief before running.",
+  matches: "i will look for high-signal people or businesses and show why they match.",
+  packets: "each packet keeps match reasons, notes, suggested angles, and sources tidy.",
+  complete: "lightfern completes the record before drafting gets involved.",
+  draft: "once the context is ready, lightfern drafts the final email."
 };
 
 const viewResponses = {
@@ -34,7 +34,7 @@ function refreshIcons() {
 function setActiveTask(taskId) {
   $$("[data-task]").forEach((button) => {
     button.classList.toggle("is-current", button.dataset.task === taskId);
-    button.classList.toggle("is-done", button.dataset.task !== taskId);
+    button.classList.remove("is-done");
   });
 
   const greeting = $("[data-assistant-greeting]");
@@ -129,4 +129,9 @@ try {
   setAssistantCollapsed(localStorage.getItem("noodle-chat-collapsed") === "true");
 } catch {
   setAssistantCollapsed(false);
+}
+
+if (window.location.pathname.startsWith("/rituals")) {
+  setActiveNav("rituals");
+  setActiveTask("rituals");
 }
