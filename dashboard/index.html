@@ -19,7 +19,7 @@
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
     <script type="module" src="/assets/js/dashboard.js"></script>
   </head>
-  <body>
+  <body class="chat-collapsed">
     <div class="dashboard-shell">
       <aside class="sidebar" aria-label="Noodle navigation">
         <a class="brand" href="/" aria-label="Noodle home">
@@ -50,10 +50,6 @@
           <button class="nav-item" type="button" data-view="sources">
             <i data-lucide="link-2" aria-hidden="true"></i>
             <span>Source Library</span>
-          </button>
-          <button class="nav-item" type="button" data-view="rituals">
-            <i data-lucide="clock-3" aria-hidden="true"></i>
-            <span>Rituals</span>
           </button>
           <button class="nav-item with-chevron" type="button" data-view="settings">
             <i data-lucide="settings" aria-hidden="true"></i>
@@ -94,37 +90,104 @@
           <span>Noodle</span>
         </div>
 
-        <h1 id="dashboard-title" class="sr-only">Noodle dashboard tasks</h1>
-        <div class="task-list" role="list" aria-label="Reach workflow">
-          <button class="task-row is-current" type="button" data-task="target">
-            <i data-lucide="arrow-right" aria-hidden="true"></i>
-            <span>Describe Who You Want To Reach</span>
-          </button>
-          <button class="task-row" type="button" data-task="goal">
-            <i data-lucide="arrow-right" aria-hidden="true"></i>
-            <span>Clarify The Outreach Goal</span>
-          </button>
-          <button class="task-row" type="button" data-task="brief">
-            <i data-lucide="arrow-right" aria-hidden="true"></i>
-            <span>Review The Search Brief</span>
-          </button>
-          <button class="task-row" type="button" data-task="matches">
-            <i data-lucide="arrow-right" aria-hidden="true"></i>
-            <span>Find High-Signal Matches</span>
-          </button>
-          <button class="task-row" type="button" data-task="packets">
-            <i data-lucide="arrow-right" aria-hidden="true"></i>
-            <span>Build Research Packets</span>
-          </button>
-          <button class="task-row" type="button" data-task="complete">
-            <i data-lucide="arrow-right" aria-hidden="true"></i>
-            <span>Complete With Lightfern</span>
-          </button>
-          <button class="task-row" type="button" data-task="draft">
-            <i data-lucide="arrow-right" aria-hidden="true"></i>
-            <span>Draft In Lightfern</span>
-          </button>
-        </div>
+        <section class="reach-workspace" aria-labelledby="dashboard-title">
+          <div class="workspace-heading">
+            <p>Find Matches</p>
+            <h1 id="dashboard-title">Who should we reach first?</h1>
+          </div>
+
+          <form class="reach-builder" data-reach-builder>
+            <label class="reach-input reach-input-primary">
+              <span>Target</span>
+              <input
+                name="target"
+                type="text"
+                autocomplete="off"
+                value="Pre-seed investors in London who back AI sales tools"
+              />
+            </label>
+            <label class="reach-input">
+              <span>Goal</span>
+              <input
+                name="goal"
+                type="text"
+                autocomplete="off"
+                value="Introduce our Lightfern hackathon workflow"
+              />
+            </label>
+            <button class="primary-action" type="submit">
+              Find matches
+              <i data-lucide="arrow-right" aria-hidden="true"></i>
+            </button>
+          </form>
+
+          <section class="brief-panel" aria-label="Search brief">
+            <div class="panel-title">
+              <span>Search brief</span>
+              <strong data-brief-status>Ready to run</strong>
+            </div>
+            <div class="brief-grid">
+              <div>
+                <small>Looking for</small>
+                <p data-brief-target>pre-seed investors in London</p>
+              </div>
+              <div>
+                <small>Signal</small>
+                <p>AI sales tools, GTM workflow, early-stage SaaS</p>
+              </div>
+              <div>
+                <small>Goal</small>
+                <p data-brief-goal>introduce our Lightfern hackathon workflow</p>
+              </div>
+              <div>
+                <small>Output</small>
+                <p>research packets for Lightfern drafting</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="packet-section" aria-labelledby="packets-title">
+            <div class="section-title">
+              <h2 id="packets-title">Research packets</h2>
+              <span>3 strong matches</span>
+            </div>
+            <div class="packet-list">
+              <article class="packet-card">
+                <div class="packet-topline">
+                  <h3>Northstar Ventures</h3>
+                  <span>92% match</span>
+                </div>
+                <p>Pre-seed investor with workflow software and AI-enabled sales interest.</p>
+                <ul>
+                  <li>Angle: show how research packets improve Lightfern draft quality.</li>
+                  <li>Sources: portfolio notes, partner posts, recent AI investment thesis.</li>
+                </ul>
+                <button type="button" data-send-packet="Northstar Ventures">Draft in Lightfern</button>
+              </article>
+
+              <article class="packet-card">
+                <div class="packet-topline">
+                  <h3>Seedcamp</h3>
+                  <span>87% match</span>
+                </div>
+                <p>European seed fund with strong founder tooling and GTM infrastructure fit.</p>
+                <ul>
+                  <li>Angle: position Noodle as the context layer before outbound drafting.</li>
+                  <li>Sources: fund focus, founder resources, recent SaaS portfolio work.</li>
+                </ul>
+                <button type="button" data-send-packet="Seedcamp">Draft in Lightfern</button>
+              </article>
+            </div>
+          </section>
+
+          <section class="handoff-strip" aria-label="Lightfern handoff status">
+            <div>
+              <small>Lightfern handoff</small>
+              <p>2 packets complete, 1 waiting on source verification</p>
+            </div>
+            <button type="button" data-view="drafts">Open drafts</button>
+          </section>
+        </section>
       </main>
 
       <aside class="assistant-panel" aria-label="Noodle assistant">
@@ -144,10 +207,10 @@
             class="round-button"
             type="button"
             data-toggle-assistant
-            aria-expanded="true"
-            aria-label="Collapse assistant"
+            aria-expanded="false"
+            aria-label="Expand assistant"
           >
-            <i data-lucide="chevrons-right" aria-hidden="true"></i>
+            <i data-lucide="chevrons-left" aria-hidden="true"></i>
           </button>
         </header>
 

@@ -190,18 +190,73 @@ button {
   font-weight: 700;
 }
 
+.reach-entry {
+  width: min(740px, 100%);
+  margin: 42px auto 0;
+}
+
+.reach-form {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+  min-height: 70px;
+  padding: 8px 8px 8px 24px;
+  border: 1px solid rgba(232, 223, 207, 0.95);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.22), 0 0 0 1px rgba(255, 255, 255, 0.55);
+}
+
+.reach-icon {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  background: #111;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.reach-field {
+  min-width: 0;
+  padding: 0;
+  text-align: left;
+}
+
+.reach-field input {
+  width: 100%;
+  min-width: 0;
+  height: 46px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #1c1c1f;
+  font-size: clamp(18px, 1.7vw, 22px);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+}
+
+.reach-field input::placeholder {
+  color: #8d8981;
+}
+
 .waitlist-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
   min-height: 54px;
-  margin-top: 38px;
+  margin-top: 0;
   padding: 0 28px;
-  border: 1px solid rgba(99, 85, 255, 0.95);
+  border: 0;
   border-radius: 999px;
-  background: rgba(3, 3, 5, 0.7);
-  color: rgba(255, 255, 255, 0.86);
+  background: #161616;
+  color: #fff;
   font-size: 16px;
   font-weight: 700;
   transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
@@ -210,8 +265,7 @@ button {
 
 .waitlist-button:hover {
   transform: translateY(-2px);
-  border-color: #8d83ff;
-  box-shadow: 0 0 32px rgba(99, 85, 255, 0.38);
+  box-shadow: 0 10px 24px rgba(255, 255, 255, 0.12);
 }
 
 .cohort-band {
@@ -589,6 +643,32 @@ button {
   .hero p {
     max-width: 330px;
     font-size: 17px;
+  }
+
+  .reach-entry {
+    width: min(100%, 370px);
+    margin-top: 32px;
+  }
+
+  .reach-form {
+    grid-template-columns: 28px minmax(0, 1fr);
+    gap: 10px;
+    padding: 13px;
+    border-radius: 30px;
+  }
+
+  .reach-field {
+    padding: 0;
+  }
+
+  .reach-field input {
+    font-size: 17px;
+    line-height: 1.2;
+  }
+
+  .reach-form .waitlist-button {
+    grid-column: 1 / -1;
+    width: 100%;
   }
 
   .eyebrow {

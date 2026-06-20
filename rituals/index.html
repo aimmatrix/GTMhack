@@ -3,33 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Noodle - Rituals</title>
-    <meta
-      name="description"
-      content="Noodle rituals dashboard for preparing Lightfern-ready reach packets."
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="/assets/css/dashboard.css" />
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+    <title>Redirecting to Noodle Dashboard</title>
+    <meta http-equiv="refresh" content="0; url=/dashboard/" />
+    <link rel="canonical" href="/dashboard/" />
   </head>
   <body>
-    <script type="module">
-      document.body.dataset.entry = "rituals";
-
-      const response = await fetch("/dashboard/index.html");
-      const html = await response.text();
-      const doc = new DOMParser().parseFromString(html, "text/html");
-      document.body.replaceWith(doc.body);
-
-      const script = document.createElement("script");
-      script.type = "module";
-      script.src = "/assets/js/dashboard.js";
-      document.body.append(script);
+    <script>
+      window.location.replace("/dashboard/");
     </script>
+    <p><a href="/dashboard/">Open dashboard</a></p>
   </body>
 </html>

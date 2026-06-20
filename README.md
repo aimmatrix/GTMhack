@@ -21,9 +21,9 @@ http://127.0.0.1:4173/
 ## User journey
 
 1. `/` opens the Prism landing page and explains the Lightfern Reach promise.
-2. The primary CTA, `Enter the dashboard`, moves the user into `/dashboard/`.
-3. `/dashboard/` is the working app shell: match finding, research packets, Lightfern drafts, calendar, source library, rituals, and settings.
-4. `/rituals/` is a direct entry into the same dashboard shell with the Rituals view selected.
+2. The landing page asks, `Who do you want to reach?`
+3. Submitting the target opens `/dashboard/?target=...` and seeds the assistant with that reach brief.
+4. `/dashboard/` is the working app shell: match finding, research packets, Lightfern drafts, calendar, source library, and settings.
 
 ## Routes
 
@@ -39,21 +39,15 @@ http://127.0.0.1:4173/dashboard/
 
 Main dashboard app.
 
-```text
-http://127.0.0.1:4173/rituals/
-```
-
-Rituals-focused dashboard entry.
-
 ## Project structure
 
 ```text
 index.html                 landing page
 dashboard/index.html       dashboard app shell
-rituals/index.html         rituals deep-link wrapper
+rituals/index.html         redirect to /dashboard/
 assets/css/landing.css     landing-specific visual system
 assets/css/dashboard.css   dashboard-specific visual system
-assets/js/landing.js       Prism, countdown, and landing interactions
+assets/js/landing.js       Prism, countdown, target capture, and landing interactions
 assets/js/dashboard.js     dashboard navigation, task state, and composer interactions
 PRD-lightfern-reach.md     product requirements and app flow
 ```
