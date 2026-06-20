@@ -609,13 +609,13 @@ body.chat-collapsed .message-composer {
 
   .task-list {
     width: calc(100% - 42px);
-    margin: 58px auto 0;
+    margin: 42px auto 48px;
   }
 
   .task-row {
     grid-template-columns: 34px 1fr;
     gap: 16px;
-    min-height: 72px;
+    min-height: 62px;
   }
 
   .task-row svg {
@@ -624,7 +624,8 @@ body.chat-collapsed .message-composer {
   }
 
   .task-row span {
-    font-size: clamp(35px, 13vw, 48px);
+    font-size: clamp(28px, 10vw, 38px);
+    line-height: 0.98;
   }
 
   .assistant-header {
