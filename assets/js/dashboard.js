@@ -382,7 +382,8 @@ function setWorkingMode(active) {
   }
 
   if (title) {
-    title.textContent = active ? "Noodle is on it." : "Refine the reach.";
+    title.textContent = active ? "Noodle is on it" : "Refine the reach.";
+    title.classList.toggle("is-working", active);
   }
 }
 
