@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Noodle - Reach Dashboard</title>
+    <meta
+      name="description"
+      content="Noodle helps you find the right people, prepare research context, and hand it to Lightfern for drafting."
+    />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%237b6cff'/%3E%3Ctext x='32' y='40' text-anchor='middle' font-family='Arial' font-size='24' font-weight='700' fill='white'%3EN%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/assets/css/dashboard.css" />
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+    <script type="module" src="/assets/js/dashboard.js"></script>
+  </head>
+  <body>
+    <div class="dashboard-shell">
+      <aside class="sidebar" aria-label="Noodle navigation">
+        <a class="brand" href="/" aria-label="Noodle home">
+          <img
+            src="https://api.dicebear.com/9.x/bottts-neutral/svg?seed=Noodle&backgroundColor=8174ff,6c5cff&radius=18"
+            alt=""
+          />
+          <span>Noodle</span>
+        </a>
+
+        <nav class="primary-nav" aria-label="Primary">
+          <button class="nav-item is-active" type="button" data-view="matches">
+            <i data-lucide="search" aria-hidden="true"></i>
+            <span>Find Matches</span>
+          </button>
+          <button class="nav-item" type="button" data-view="packets">
+            <i data-lucide="file-search" aria-hidden="true"></i>
+            <span>Research Packets</span>
+          </button>
+          <button class="nav-item" type="button" data-view="drafts">
+            <i data-lucide="send" aria-hidden="true"></i>
+            <span>Lightfern Drafts</span>
+          </button>
+          <button class="nav-item" type="button" data-view="calendar">
+            <i data-lucide="calendar-days" aria-hidden="true"></i>
+            <span>Reach Calendar</span>
+          </button>
+          <button class="nav-item" type="button" data-view="sources">
+            <i data-lucide="link-2" aria-hidden="true"></i>
+            <span>Source Library</span>
+          </button>
+          <button class="nav-item" type="button" data-view="rituals">
+            <i data-lucide="clock-3" aria-hidden="true"></i>
+            <span>Rituals</span>
+          </button>
+          <button class="nav-item with-chevron" type="button" data-view="settings">
+            <i data-lucide="settings" aria-hidden="true"></i>
+            <span>Settings</span>
+            <i data-lucide="chevron-right" aria-hidden="true"></i>
+          </button>
+        </nav>
+
+        <section class="gift-card" aria-label="Gift access card">
+          <button class="dismiss-card" type="button" aria-label="Dismiss gift card">
+            <i data-lucide="x" aria-hidden="true"></i>
+          </button>
+          <div class="gift-icon" aria-hidden="true">LF</div>
+          <h2>Invite a GTM Teammate</h2>
+          <p>Share 2 one-month Lightfern Reach trials with people building warm outbound.</p>
+          <button class="copy-code" type="button" data-copy-code>
+            <span>ANGELA-GIFT</span>
+            <i data-lucide="copy" aria-hidden="true"></i>
+          </button>
+          <small>
+            <i data-lucide="clock" aria-hidden="true"></i>
+            next code in <b>10d : 09h</b>
+          </small>
+        </section>
+
+        <button class="profile-switcher" type="button">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=96&q=80" alt="Angela" />
+          <span>Angela</span>
+          <i data-lucide="chevron-down" aria-hidden="true"></i>
+        </button>
+      </aside>
+
+      <main class="task-panel" aria-labelledby="dashboard-title">
+        <div class="mobile-topbar">
+          <button class="round-button" type="button" data-toggle-sidebar aria-label="Open menu">
+            <i data-lucide="menu" aria-hidden="true"></i>
+          </button>
+          <span>Noodle</span>
+        </div>
+
+        <h1 id="dashboard-title" class="sr-only">Noodle dashboard tasks</h1>
+        <div class="task-list" role="list" aria-label="Setup tasks">
+          <button class="task-row is-done" type="button" data-task="connect-device">
+            <i data-lucide="arrow-right" aria-hidden="true"></i>
+            <span>Connect Your Outreach Source</span>
+          </button>
+          <button class="task-row is-done" type="button" data-task="meet-noodle">
+            <i data-lucide="arrow-right" aria-hidden="true"></i>
+            <span>Meet Noodle</span>
+          </button>
+          <button class="task-row is-done" type="button" data-task="connect-lightfern">
+            <i data-lucide="arrow-right" aria-hidden="true"></i>
+            <span>Connect Lightfern</span>
+          </button>
+          <button class="task-row is-done" type="button" data-task="audit">
+            <i data-lucide="arrow-right" aria-hidden="true"></i>
+            <span>Audit Your Target List</span>
+          </button>
+          <button class="task-row is-done" type="button" data-task="skills">
+            <i data-lucide="arrow-right" aria-hidden="true"></i>
+            <span>Explore Noodle Skills</span>
+          </button>
+          <button class="task-row is-done" type="button" data-task="calendar">
+            <i data-lucide="arrow-right" aria-hidden="true"></i>
+            <span>Reach Calendar</span>
+          </button>
+          <button class="task-row is-current" type="button" data-task="rituals">
+            <i data-lucide="arrow-right" aria-hidden="true"></i>
+            <span>Rituals</span>
+          </button>
+        </div>
+      </main>
+
+      <aside class="assistant-panel" aria-label="Noodle assistant">
+        <header class="assistant-header">
+          <button class="round-button" type="button" data-toggle-sidebar aria-label="Open menu">
+            <i data-lucide="menu" aria-hidden="true"></i>
+          </button>
+          <div class="assistant-title">
+            <img
+              src="https://api.dicebear.com/9.x/bottts-neutral/svg?seed=Noodle&backgroundColor=8174ff,6c5cff&radius=18"
+              alt=""
+            />
+            <strong>Noodle</strong>
+            <span>Reach Assistant @ Angela</span>
+          </div>
+          <button
+            class="round-button"
+            type="button"
+            data-toggle-assistant
+            aria-expanded="true"
+            aria-label="Collapse assistant"
+          >
+            <i data-lucide="chevrons-right" aria-hidden="true"></i>
+          </button>
+        </header>
+
+        <section class="assistant-empty" aria-live="polite">
+          <p data-assistant-greeting>hey angela.</p>
+        </section>
+
+        <form class="message-composer" data-composer>
+          <button class="round-button" type="button" aria-label="Add attachment">
+            <i data-lucide="plus" aria-hidden="true"></i>
+          </button>
+          <label class="message-field">
+            <span class="sr-only">Message Noodle</span>
+            <input name="message" type="text" autocomplete="off" placeholder="iMessage" />
+          </label>
+          <button class="round-button" type="submit" aria-label="Send message">
+            <i data-lucide="mic" aria-hidden="true"></i>
+          </button>
+          <div class="composer-help" aria-hidden="true">
+            <span><i data-lucide="corner-down-left"></i> to send</span>
+            <span><i data-lucide="arrow-big-up"></i> <i data-lucide="corner-down-left"></i> for new line</span>
+          </div>
+        </form>
+      </aside>
+    </div>
+  </body>
+</html>

@@ -14,19 +14,21 @@
       href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/assets/css/dashboard.css" />
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
   </head>
   <body>
     <script type="module">
-      const response = await fetch("/index.html");
+      document.body.dataset.entry = "rituals";
+
+      const response = await fetch("/dashboard/index.html");
       const html = await response.text();
       const doc = new DOMParser().parseFromString(html, "text/html");
       document.body.replaceWith(doc.body);
 
       const script = document.createElement("script");
       script.type = "module";
-      script.src = "/script.js";
+      script.src = "/assets/js/dashboard.js";
       document.body.append(script);
     </script>
   </body>

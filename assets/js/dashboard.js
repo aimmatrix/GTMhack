@@ -130,3 +130,8 @@ try {
 } catch {
   setAssistantCollapsed(false);
 }
+
+if (window.location.pathname.startsWith("/rituals")) {
+  setActiveNav("rituals");
+  setActiveTask("rituals");
+}
