@@ -333,7 +333,7 @@ function hydrateSeedTarget() {
   if (input) input.placeholder = "What do you want to talk to them about?";
 
   setActiveNav("matches");
-  syncBrief(shouldAutoRun() ? "Building packet" : "Ready to run");
+  syncBrief(shouldAutoRun() ? "Finding matches" : "Ready to run");
 
   const sidebarStatus = $("[data-sidebar-status]");
   if (sidebarStatus) {

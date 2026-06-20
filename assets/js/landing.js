@@ -257,7 +257,7 @@ $("[data-reach-form]")?.addEventListener("submit", (event) => {
     // The query string still carries the target when storage is unavailable.
   }
 
-  if (button) button.textContent = "Building packet";
+  if (button) button.textContent = "Starting reach";
 });
 
 initPrism();
