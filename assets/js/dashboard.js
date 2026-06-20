@@ -1,3 +1,13 @@
+import { buildBrief, streamRun } from "./api.js";
+import {
+  clearPackets,
+  setMatchCount,
+  showSearching,
+  showEmpty,
+  renderPacket,
+} from "./cards.js";
+import "./handoff.js";
+
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
 
@@ -7,15 +17,15 @@ const viewResponses = {
   drafts: "lightfern drafts start after the context packet is ready.",
   calendar: "reach calendar is ready. i saved your next outreach window for tomorrow morning.",
   sources: "source library keeps the links i can cite before anything goes to lightfern.",
-  settings: "settings is where sender context, integrations, and handoff rules live."
+  settings: "settings is where sender context, integrations, and handoff rules live.",
 };
 
 function refreshIcons() {
   if (window.lucide) {
     window.lucide.createIcons({
       attrs: {
-        "aria-hidden": "true"
-      }
+        "aria-hidden": "true",
+      },
     });
   }
 }
@@ -49,6 +59,17 @@ function cleanValue(value, fallback) {
   return clean || fallback;
 }
 
+function fillBriefPanel(brief, status = "Ready to run") {
+  const targetNode = $("[data-brief-target]");
+  const goalNode = $("[data-brief-goal]");
+  const statusNode = $("[data-brief-status]");
+
+  const targetText = [brief.looking_for, brief.location].filter(Boolean).join(" · ");
+  if (targetNode) targetNode.textContent = (targetText || brief.raw?.description || "").toLowerCase();
+  if (goalNode) goalNode.textContent = (brief.goal || brief.interest || "").toLowerCase();
+  if (statusNode) statusNode.textContent = status;
+}
+
 function syncBrief(status = "Ready to run") {
   const form = $("[data-reach-builder]");
   if (!form) return;
@@ -65,6 +86,16 @@ function syncBrief(status = "Ready to run") {
   if (statusNode) statusNode.textContent = status;
 }
 
+function setStatus(message) {
+  const statusNode = $("[data-brief-status]");
+  if (statusNode) statusNode.textContent = message;
+
+  const greeting = $("[data-assistant-greeting]");
+  if (greeting && message) {
+    greeting.textContent = message.endsWith(".") ? message : `${message}…`;
+  }
+}
+
 function getSeedTarget() {
   const params = new URLSearchParams(window.location.search);
   const queryTarget = params.get("target")?.trim();
@@ -79,7 +110,7 @@ function getSeedTarget() {
 
 function hydrateSeedTarget() {
   const target = getSeedTarget();
-  if (!target) return;
+  if (!target) return false;
 
   const form = $("[data-reach-builder]");
   if (form) {
@@ -98,6 +129,59 @@ function hydrateSeedTarget() {
 
   setActiveNav("matches");
   syncBrief("Ready to run");
+  return true;
+}
+
+async function runReachSearch() {
+  const form = $("[data-reach-builder]");
+  if (!form) return;
+
+  const targetValue = cleanValue(form.elements.target.value, "");
+  const goalValue = cleanValue(form.elements.goal.value, "");
+  if (!targetValue) return;
+
+  clearPackets();
+  showSearching();
+  setActiveNav("matches");
+  setStatus("Building search brief");
+
+  try {
+    const brief = await buildBrief({
+      description: targetValue,
+      goal: goalValue || undefined,
+    });
+
+    fillBriefPanel(brief, "Searching for matches");
+
+    await streamRun(
+      { brief },
+      {
+        onStatus: (message) => setStatus(message),
+        onCard: (card) => {
+          renderPacket(card);
+          refreshIcons();
+        },
+        onDone: (_runId, stats) => {
+          setMatchCount(stats.researched);
+          setStatus(`${stats.researched} match${stats.researched === 1 ? "" : "es"} ready`);
+          const greeting = $("[data-assistant-greeting]");
+          if (greeting) {
+            greeting.textContent =
+              stats.researched > 0
+                ? `i found ${stats.researched} strong direction${stats.researched === 1 ? "" : "s"} for "${targetValue}". the best packets are ready below.`
+                : `no strong matches yet for "${targetValue}". try refining the brief.`;
+          }
+        },
+        onError: (message) => {
+          showEmpty(message);
+          setStatus("Search failed");
+        },
+      },
+    );
+  } catch (err) {
+    showEmpty(err.message ?? "Something went wrong");
+    setStatus("Search failed");
+  }
 }
 
 $$("[data-view]").forEach((button) => {
@@ -121,31 +205,7 @@ $("[data-reach-builder]")?.addEventListener("input", () => syncBrief());
 
 $("[data-reach-builder]")?.addEventListener("submit", (event) => {
   event.preventDefault();
-
-  const form = event.currentTarget;
-  const target = cleanValue(form.elements.target.value, "pre-seed investors in London");
-
-  syncBrief("3 matches found");
-  setActiveNav("matches");
-
-  const greeting = $("[data-assistant-greeting]");
-  if (greeting) {
-    greeting.textContent = `i found 3 strong directions for "${target}". the best packets are ready below.`;
-  }
-});
-
-$$("[data-send-packet]").forEach((button) => {
-  button.addEventListener("click", () => {
-    const match = button.dataset.sendPacket;
-
-    setActiveNav("drafts");
-    setAssistantCollapsed(false);
-
-    const greeting = $("[data-assistant-greeting]");
-    if (greeting) {
-      greeting.textContent = `${match} is ready for lightfern. i will send the context packet, not a finished email.`;
-    }
-  });
+  runReachSearch();
 });
 
 const copyCode = $("[data-copy-code]");
@@ -178,5 +238,9 @@ $("[data-composer]")?.addEventListener("submit", (event) => {
 window.addEventListener("load", refreshIcons);
 refreshIcons();
 setAssistantCollapsed(true);
-syncBrief();
-hydrateSeedTarget();
+
+if (hydrateSeedTarget()) {
+  runReachSearch();
+} else {
+  syncBrief();
+}

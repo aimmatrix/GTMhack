@@ -236,5 +236,40 @@
         </form>
       </aside>
     </div>
+
+    <dialog class="sender-modal" aria-labelledby="sender-modal-title">
+      <form class="sender-form" data-sender-form>
+        <header class="sender-modal-header">
+          <h2 id="sender-modal-title">Before your first draft</h2>
+          <p>Tell Lightfern who you are — we&apos;ll remember this for next time.</p>
+        </header>
+
+        <label class="reach-input">
+          <span>Name</span>
+          <input name="name" type="text" autocomplete="name" required />
+        </label>
+        <label class="reach-input">
+          <span>Company</span>
+          <input name="company" type="text" autocomplete="organization" />
+        </label>
+        <label class="reach-input">
+          <span>What you do</span>
+          <input name="whatYouDo" type="text" autocomplete="organization-title" />
+        </label>
+        <label class="reach-input">
+          <span>Outreach goal</span>
+          <input name="goal" type="text" />
+        </label>
+        <label class="reach-input">
+          <span>From email</span>
+          <input name="fromEmail" type="email" autocomplete="email" required />
+        </label>
+
+        <footer class="sender-modal-actions">
+          <button type="button" data-sender-cancel>Cancel</button>
+          <button class="primary-action" type="submit">Send context to Lightfern</button>
+        </footer>
+      </form>
+    </dialog>
   </body>
 </html>
