@@ -241,6 +241,7 @@ const observer = new IntersectionObserver(
 $$("[data-reveal]").forEach((node) => observer.observe(node));
 
 $("[data-reach-form]")?.addEventListener("submit", (event) => {
+  const button = event.currentTarget.querySelector("button[type='submit'] span");
   const input = event.currentTarget.elements.target;
   const value = input.value.trim();
 
@@ -255,6 +256,8 @@ $("[data-reach-form]")?.addEventListener("submit", (event) => {
   } catch {
     // The query string still carries the target when storage is unavailable.
   }
+
+  if (button) button.textContent = "Building packet";
 });
 
 initPrism();

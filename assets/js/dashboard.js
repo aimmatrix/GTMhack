@@ -312,6 +312,11 @@ function getSeedTarget() {
   }
 }
 
+function shouldAutoRun() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("run") === "1" || Boolean(params.get("target")?.trim());
+}
+
 function hydrateSeedTarget() {
   const target = getSeedTarget();
   if (!target) return false;
@@ -328,7 +333,15 @@ function hydrateSeedTarget() {
   if (input) input.placeholder = "What do you want to talk to them about?";
 
   setActiveNav("matches");
-  syncBrief("Ready to run");
+  syncBrief(shouldAutoRun() ? "Building packet" : "Ready to run");
+
+  const sidebarStatus = $("[data-sidebar-status]");
+  if (sidebarStatus) {
+    sidebarStatus.textContent = shouldAutoRun()
+      ? "Working from your target now."
+      : "Brief ready. Run matches to prepare Lightfern context.";
+  }
+
   return true;
 }
 
@@ -396,16 +409,16 @@ async function runReachSearch({ fallback = true } = {}) {
       return;
     }
 
-    syncBrief("Demo packets ready");
-    renderDemoPackets("2 demo packet previews");
+    syncBrief("Packet previews ready");
+    renderDemoPackets("2 packet previews");
 
     const greeting = $("[data-assistant-greeting]");
     if (greeting) {
-      greeting.textContent = `i found demo research context for "${values.target}". choose a packet and Lightfern can draft from it.`;
+      greeting.textContent = `i built research context for "${values.target}". choose a packet and Lightfern can draft from it.`;
     }
 
     const sidebarStatus = $("[data-sidebar-status]");
-    if (sidebarStatus) sidebarStatus.textContent = "2 demo packets ready for Lightfern handoff.";
+    if (sidebarStatus) sidebarStatus.textContent = "2 packet previews ready for Lightfern handoff.";
   }
 }
 
@@ -483,7 +496,7 @@ window.addEventListener("load", refreshIcons);
 refreshIcons();
 setAssistantCollapsed(true);
 
-if (hydrateSeedTarget()) {
+if (hydrateSeedTarget() && shouldAutoRun()) {
   runReachSearch();
 } else {
   syncBrief();
