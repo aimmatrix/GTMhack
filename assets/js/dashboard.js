@@ -40,6 +40,25 @@ const scenarios = {
       },
     ],
   },
+  namedPerson: {
+    signal: "public profile, company context, role fit, recent activity",
+    matches: [
+      {
+        name: "Primary person profile",
+        score: "88% match",
+        context: "Noodle treats this as a named-person lookup and starts by finding role, company, and recent public context.",
+        angle: "Use the clearest public signal to explain why this person is worth reaching now.",
+        sources: "public profile, company page, recent posts or mentions",
+      },
+      {
+        name: "Closest related company or team",
+        score: "76% match",
+        context: "If the exact person needs verification, Noodle keeps the search moving by finding the closest company or team context.",
+        angle: "Confirm the right owner, then hand Lightfern a grounded reason to start the conversation.",
+        sources: "company site, search results, team pages",
+      },
+    ],
+  },
   growth: {
     signal: "growth role, fintech category, active acquisition motion",
     matches: [
@@ -195,7 +214,21 @@ function selectedScenario(target) {
   if (value.includes("cmo") || value.includes("dtc") || value.includes("brand")) return scenarios.dtc;
   if (value.includes("coffee") || value.includes("shoreditch") || value.includes("local")) return scenarios.local;
   if (value.includes("investor") || value.includes("fund") || value.includes("pre-seed")) return scenarios.investor;
+  if (looksLikePersonName(value)) return scenarios.namedPerson;
   return scenarios.generic;
+}
+
+function looksLikePersonName(value) {
+  const words = value
+    .replace(/[^a-z\s'-]/g, " ")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+
+  if (words.length < 2 || words.length > 4) return false;
+
+  const orgWords = ["company", "team", "cmo", "cto", "head", "heads", "founder", "investor", "investors", "brand", "brands"];
+  return !words.some((word) => orgWords.includes(word));
 }
 
 function formValues() {
@@ -272,13 +305,15 @@ function setStatus(message) {
 }
 
 function demoCard(match, values, index) {
+  const isNamedPersonFallback = match.name === "Primary person profile";
+
   return {
     id: `demo-${index}`,
     confidence: index === 0 ? "high" : "medium",
     match: {
-      name: match.name,
+      name: isNamedPersonFallback ? values.target : match.name,
       role: values.target,
-      company: match.name,
+      company: isNamedPersonFallback ? "Person lookup" : match.name,
     },
     why_match: match.context,
     suggested_angle: match.angle,
@@ -420,6 +455,26 @@ async function runReachSearch({ fallback = true } = {}) {
           refreshIcons();
         },
         onDone: (_runId, stats) => {
+          if (stats.researched <= 0) {
+            syncBrief("Packet previews ready");
+            renderDemoPackets("2 suggested starting points");
+            setStatus("Suggested starting points ready");
+
+            const greeting = $("[data-assistant-greeting]");
+            if (greeting) {
+              greeting.textContent = `i could not verify strong live matches yet, so i prepared starting points for "${values.target}".`;
+            }
+
+            const messageNode = $("[data-run-message]");
+            if (messageNode) {
+              messageNode.textContent = "No verified live matches yet, so Noodle prepared useful starting points instead.";
+            }
+
+            const sidebarStatus = $("[data-sidebar-status]");
+            if (sidebarStatus) sidebarStatus.textContent = "Starting points ready for Lightfern context.";
+            return;
+          }
+
           setMatchCount(stats.researched);
           setStatus(`${stats.researched} match${stats.researched === 1 ? "" : "es"} ready`);
 

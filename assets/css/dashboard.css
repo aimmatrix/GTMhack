@@ -509,6 +509,10 @@ body.chat-collapsed .dashboard-shell {
   margin-bottom: 18px;
 }
 
+.reach-builder[hidden] {
+  display: none;
+}
+
 .run-summary {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
