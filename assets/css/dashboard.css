@@ -293,59 +293,248 @@ body.chat-collapsed .dashboard-shell {
   background: #fff;
 }
 
-.task-list {
-  width: min(760px, calc(100% - 96px));
-  margin: 215px 0 0 50px;
+.reach-workspace {
+  width: min(760px, calc(100% - 84px));
+  margin: 78px 0 80px 50px;
+  padding-bottom: 24px;
 }
 
-.task-row {
-  display: grid;
-  grid-template-columns: 50px minmax(0, 1fr);
-  gap: 34px;
-  align-items: center;
-  width: 100%;
-  min-height: 89px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: #777d85;
-  text-align: left;
+.workspace-heading {
+  margin-bottom: 31px;
 }
 
-.task-row svg {
-  width: 34px;
-  height: 34px;
-  color: currentColor;
-  stroke-width: 1.8;
+.workspace-heading p {
+  margin: 0 0 10px;
+  color: #7e858f;
+  font-size: 15px;
+  font-weight: 700;
 }
 
-.task-row span {
-  max-width: 540px;
+.workspace-heading h1 {
+  max-width: 610px;
+  margin: 0;
+  color: #191b21;
   font-family: var(--serif);
-  font-size: clamp(44px, 4.2vw, 52px);
+  font-size: clamp(54px, 5.9vw, 76px);
   font-weight: 400;
-  line-height: 0.92;
-  letter-spacing: 0;
+  line-height: 0.88;
 }
 
-.task-row.is-done span {
-  text-decoration: line-through;
-  text-decoration-thickness: 1px;
-  text-decoration-color: rgba(100, 104, 112, 0.82);
+.reach-builder {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(210px, 0.55fr);
+  gap: 12px;
+  align-items: end;
+  max-width: 690px;
+  margin-bottom: 18px;
 }
 
-.task-row.is-current {
-  color: #181a20;
+.reach-input {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
 }
 
-.task-row.is-current svg {
+.reach-input span,
+.panel-title span,
+.section-title span,
+.brief-grid small,
+.handoff-strip small {
+  color: #8a9099;
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.reach-input input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 15px;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  background: #fbfbfc;
+  color: #25272d;
+  font-size: 15px;
+  font-weight: 600;
+  outline: none;
+}
+
+.reach-input-primary {
+  grid-column: 1 / -1;
+}
+
+.reach-input input:focus {
+  border-color: rgba(123, 108, 255, 0.56);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(123, 108, 255, 0.12);
+}
+
+.primary-action {
+  display: inline-flex;
+  gap: 9px;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 17px;
+  border: 0;
+  border-radius: 10px;
+  background: #23252b;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 750;
+}
+
+.primary-action svg {
+  width: 17px;
+  height: 17px;
+}
+
+.brief-panel,
+.packet-card,
+.handoff-strip {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.brief-panel {
+  max-width: 690px;
+  padding: 18px;
+  box-shadow: 0 1px 2px rgba(21, 25, 34, 0.04);
+}
+
+.panel-title,
+.section-title,
+.packet-topline,
+.handoff-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.panel-title {
+  margin-bottom: 16px;
+}
+
+.panel-title strong {
   color: var(--accent);
-  stroke-width: 2.1;
+  font-size: 13px;
+  font-weight: 800;
 }
 
-.task-row:focus-visible,
+.brief-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 24px;
+}
+
+.brief-grid p {
+  margin: 5px 0 0;
+  color: #292c33;
+  font-size: 15px;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.packet-section {
+  max-width: 690px;
+  margin-top: 26px;
+}
+
+.section-title {
+  margin-bottom: 12px;
+}
+
+.section-title h2 {
+  margin: 0;
+  color: #23262d;
+  font-family: var(--serif);
+  font-size: 38px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.packet-list {
+  display: grid;
+  gap: 10px;
+}
+
+.packet-card {
+  padding: 17px 18px 16px;
+}
+
+.packet-card h3 {
+  margin: 0;
+  color: #24262c;
+  font-size: 17px;
+  line-height: 1.1;
+}
+
+.packet-topline span {
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: #6657f7;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.packet-card p {
+  margin: 9px 0 0;
+  color: #606772;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.packet-card ul {
+  display: grid;
+  gap: 5px;
+  margin: 12px 0 14px;
+  padding-left: 17px;
+  color: #737a84;
+  font-size: 13px;
+  line-height: 1.34;
+}
+
+.packet-card button,
+.handoff-strip button {
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: var(--soft);
+  color: #30333a;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.packet-card button:hover,
+.handoff-strip button:hover {
+  border-color: #c9cdd4;
+  background: #fff;
+}
+
+.handoff-strip {
+  max-width: 690px;
+  margin-top: 12px;
+  padding: 14px 16px;
+}
+
+.handoff-strip p {
+  margin: 4px 0 0;
+  color: #505762;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.primary-action:focus-visible,
+.reach-input input:focus-visible,
 .nav-item:focus-visible,
 .round-button:focus-visible,
+.packet-card button:focus-visible,
+.handoff-strip button:focus-visible,
 .copy-code:focus-visible,
 .profile-switcher:focus-visible {
   outline: 3px solid rgba(123, 108, 255, 0.32);
@@ -527,18 +716,21 @@ body.chat-collapsed .message-composer {
     grid-template-columns: 300px minmax(420px, 1fr) 82px;
   }
 
-  .task-list {
-    width: min(620px, calc(100% - 64px));
-    margin-top: 205px;
-    margin-left: 44px;
+  .reach-workspace {
+    width: min(660px, calc(100% - 54px));
+    margin-top: 56px;
+    margin-left: 34px;
   }
 
-  .task-row {
-    gap: 24px;
+  .workspace-heading h1 {
+    font-size: clamp(50px, 5.7vw, 68px);
   }
 
-  .task-row span {
-    font-size: clamp(40px, 4vw, 48px);
+  .reach-builder,
+  .brief-panel,
+  .packet-section,
+  .handoff-strip {
+    max-width: 620px;
   }
 }
 
@@ -570,10 +762,10 @@ body.chat-collapsed .message-composer {
     padding: 24px;
   }
 
-  .task-list {
-    margin-top: 120px;
-    margin-left: 44px;
-    margin-bottom: 100px;
+  .reach-workspace {
+    margin-top: 58px;
+    margin-left: 34px;
+    margin-bottom: 72px;
   }
 }
 
@@ -607,25 +799,43 @@ body.chat-collapsed .message-composer {
     font-size: 34px;
   }
 
-  .task-list {
-    width: calc(100% - 42px);
-    margin: 42px auto 48px;
+  .reach-workspace {
+    width: calc(100% - 34px);
+    margin: 34px auto 48px;
   }
 
-  .task-row {
-    grid-template-columns: 34px 1fr;
-    gap: 16px;
-    min-height: 62px;
+  .workspace-heading {
+    margin-bottom: 24px;
   }
 
-  .task-row svg {
-    width: 27px;
-    height: 27px;
+  .workspace-heading h1 {
+    font-size: clamp(44px, 13vw, 56px);
+    line-height: 0.9;
   }
 
-  .task-row span {
-    font-size: clamp(28px, 10vw, 38px);
-    line-height: 0.98;
+  .reach-builder,
+  .brief-grid,
+  .handoff-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .brief-panel,
+  .packet-card {
+    padding: 15px;
+  }
+
+  .handoff-strip {
+    align-items: start;
+  }
+
+  .section-title h2 {
+    font-size: 34px;
+  }
+
+  .packet-topline {
+    align-items: start;
+    flex-direction: column;
+    gap: 8px;
   }
 
   .assistant-header {

@@ -36,10 +36,24 @@
             Built with <a href="https://lightfern.com/" target="_blank" rel="noreferrer">Lightfern</a>
             for warm reach that starts with better research.
           </p>
-          <a class="waitlist-button" href="/dashboard/">
-            Enter the dashboard
-            <span aria-hidden="true">→</span>
-          </a>
+          <div class="reach-entry">
+            <form class="reach-form" action="/dashboard/" method="get" data-reach-form>
+              <span class="reach-icon" aria-hidden="true">N</span>
+              <label class="reach-field" aria-label="Who should Noodle find?">
+                <input
+                  name="target"
+                  type="text"
+                  autocomplete="off"
+                  required
+                  placeholder="Investors in London who back AI startups"
+                />
+              </label>
+              <button class="waitlist-button" type="submit" aria-label="Start reach">
+                <span>Go to Dashboard</span>
+                <span aria-hidden="true">→</span>
+              </button>
+            </form>
+          </div>
         </div>
       </section>
 

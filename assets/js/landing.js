@@ -277,6 +277,23 @@ $$("[data-voice]").forEach((button) => {
   button.addEventListener("click", () => setVoice(button.dataset.voice));
 });
 
+$("[data-reach-form]")?.addEventListener("submit", (event) => {
+  const input = event.currentTarget.elements.target;
+  const value = input.value.trim();
+
+  if (!value) {
+    event.preventDefault();
+    input.focus();
+    return;
+  }
+
+  try {
+    localStorage.setItem("noodle-last-target", value);
+  } catch {
+    // The query string still carries the target when storage is unavailable.
+  }
+});
+
 const observer = new IntersectionObserver(
   (entries) => {
     entries.forEach((entry) => {

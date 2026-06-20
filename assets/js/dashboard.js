@@ -1,23 +1,12 @@
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
 
-const taskResponses = {
-  target: "start with a plain sentence: investors in london who back ai sales tools.",
-  goal: "tell me what you want to talk about, not the final email copy.",
-  brief: "i will turn the messy ask into a clean search brief before running.",
-  matches: "i will look for high-signal people or businesses and show why they match.",
-  packets: "each packet keeps match reasons, notes, suggested angles, and sources tidy.",
-  complete: "lightfern completes the record before drafting gets involved.",
-  draft: "once the context is ready, lightfern drafts the final email."
-};
-
 const viewResponses = {
   matches: "tell me who you want to reach, and i will shape the search brief.",
   packets: "research packets are where match reasons, notes, angles, and sources stay tidy.",
   drafts: "lightfern drafts start after the context packet is ready.",
-  calendar: "reach calendar is ready. i saved your next outreach ritual for tomorrow morning.",
+  calendar: "reach calendar is ready. i saved your next outreach window for tomorrow morning.",
   sources: "source library keeps the links i can cite before anything goes to lightfern.",
-  rituals: "today's ritual: pick one audience, find five high-signal matches, then draft in lightfern.",
   settings: "settings is where sender context, integrations, and handoff rules live."
 };
 
@@ -28,18 +17,6 @@ function refreshIcons() {
         "aria-hidden": "true"
       }
     });
-  }
-}
-
-function setActiveTask(taskId) {
-  $$("[data-task]").forEach((button) => {
-    button.classList.toggle("is-current", button.dataset.task === taskId);
-    button.classList.remove("is-done");
-  });
-
-  const greeting = $("[data-assistant-greeting]");
-  if (greeting) {
-    greeting.textContent = taskResponses[taskId] || "hey angela.";
   }
 }
 
@@ -62,21 +39,66 @@ function setAssistantCollapsed(collapsed) {
 
   toggle.setAttribute("aria-expanded", String(!collapsed));
   toggle.setAttribute("aria-label", collapsed ? "Expand assistant" : "Collapse assistant");
-
   toggle.innerHTML = `<i data-lucide="${collapsed ? "chevrons-left" : "chevrons-right"}" aria-hidden="true"></i>`;
-
-  try {
-    localStorage.setItem("noodle-chat-collapsed", collapsed ? "true" : "false");
-  } catch {
-    // Local storage can be unavailable in stricter browser contexts.
-  }
 
   refreshIcons();
 }
 
-$$("[data-task]").forEach((button) => {
-  button.addEventListener("click", () => setActiveTask(button.dataset.task));
-});
+function cleanValue(value, fallback) {
+  const clean = value.trim();
+  return clean || fallback;
+}
+
+function syncBrief(status = "Ready to run") {
+  const form = $("[data-reach-builder]");
+  if (!form) return;
+
+  const target = cleanValue(form.elements.target.value, "pre-seed investors in London");
+  const goal = cleanValue(form.elements.goal.value, "introduce our Lightfern hackathon workflow");
+
+  const targetNode = $("[data-brief-target]");
+  const goalNode = $("[data-brief-goal]");
+  const statusNode = $("[data-brief-status]");
+
+  if (targetNode) targetNode.textContent = target.toLowerCase();
+  if (goalNode) goalNode.textContent = goal.toLowerCase();
+  if (statusNode) statusNode.textContent = status;
+}
+
+function getSeedTarget() {
+  const params = new URLSearchParams(window.location.search);
+  const queryTarget = params.get("target")?.trim();
+  if (queryTarget) return queryTarget;
+
+  try {
+    return localStorage.getItem("noodle-last-target")?.trim() || "";
+  } catch {
+    return "";
+  }
+}
+
+function hydrateSeedTarget() {
+  const target = getSeedTarget();
+  if (!target) return;
+
+  const form = $("[data-reach-builder]");
+  if (form) {
+    form.elements.target.value = target;
+  }
+
+  const greeting = $("[data-assistant-greeting]");
+  if (greeting) {
+    greeting.textContent = `got it. i will turn "${target}" into a lightfern-ready reach packet.`;
+  }
+
+  const input = $("[data-composer] input[name='message']");
+  if (input) {
+    input.placeholder = "What do you want to talk to them about?";
+  }
+
+  setActiveNav("matches");
+  syncBrief("Ready to run");
+}
 
 $$("[data-view]").forEach((button) => {
   button.addEventListener("click", () => {
@@ -93,6 +115,37 @@ $$("[data-toggle-sidebar]").forEach((button) => {
 
 $("[data-toggle-assistant]")?.addEventListener("click", () => {
   setAssistantCollapsed(!document.body.classList.contains("chat-collapsed"));
+});
+
+$("[data-reach-builder]")?.addEventListener("input", () => syncBrief());
+
+$("[data-reach-builder]")?.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const form = event.currentTarget;
+  const target = cleanValue(form.elements.target.value, "pre-seed investors in London");
+
+  syncBrief("3 matches found");
+  setActiveNav("matches");
+
+  const greeting = $("[data-assistant-greeting]");
+  if (greeting) {
+    greeting.textContent = `i found 3 strong directions for "${target}". the best packets are ready below.`;
+  }
+});
+
+$$("[data-send-packet]").forEach((button) => {
+  button.addEventListener("click", () => {
+    const match = button.dataset.sendPacket;
+
+    setActiveNav("drafts");
+    setAssistantCollapsed(false);
+
+    const greeting = $("[data-assistant-greeting]");
+    if (greeting) {
+      greeting.textContent = `${match} is ready for lightfern. i will send the context packet, not a finished email.`;
+    }
+  });
 });
 
 const copyCode = $("[data-copy-code]");
@@ -124,14 +177,6 @@ $("[data-composer]")?.addEventListener("submit", (event) => {
 
 window.addEventListener("load", refreshIcons);
 refreshIcons();
-
-try {
-  setAssistantCollapsed(localStorage.getItem("noodle-chat-collapsed") === "true");
-} catch {
-  setAssistantCollapsed(false);
-}
-
-if (window.location.pathname.startsWith("/rituals")) {
-  setActiveNav("rituals");
-  setActiveTask("rituals");
-}
+setAssistantCollapsed(true);
+syncBrief();
+hydrateSeedTarget();
