@@ -1,0 +1,903 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Noodle Demo Slug - Coffee Outreach</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --canvas: #000000;
+        --surface: #ffffff;
+        --ink: #202228;
+        --canvas-ink: #ffffff;
+        --canvas-muted: #c7c3d6;
+        --muted: #717680;
+        --accent: #7b6cff;
+        --accent-soft: #eeeaff;
+        --espresso: #4c3126;
+        --fresh: #2f7d5b;
+        --fresh-soft: #e7f3ed;
+        --line: #e6e1d8;
+        --dark-line: #202024;
+        --shadow: 0 34px 110px rgba(0, 0, 0, 0.42);
+        --serif: "Instrument Serif", Georgia, "Times New Roman", serif;
+        --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 100%;
+        min-width: 320px;
+        min-height: 100%;
+        margin: 0;
+        background: var(--canvas);
+        color: var(--ink);
+        font-family: var(--sans);
+      }
+
+      body {
+        overflow: hidden;
+        min-height: 100vh;
+      }
+
+      [data-composition-id="coffee-demo-slug"] {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: var(--canvas);
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
+        transform: translate(-50%, -50%) scale(1);
+        transform-origin: center center;
+      }
+
+      .grain {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+        opacity: 0.035;
+        background-image:
+          radial-gradient(circle at 75% 22%, rgba(123, 108, 255, 0.5), transparent 24%),
+          radial-gradient(circle at 18% 78%, rgba(47, 125, 91, 0.42), transparent 28%);
+        background-size: 100% 100%;
+      }
+
+      .rule {
+        position: absolute;
+        z-index: 2;
+        width: 1px;
+        height: 72%;
+        background: rgba(255, 255, 255, 0.08);
+        transform: rotate(18deg);
+      }
+
+      .rule-a {
+        left: 11%;
+        top: 10%;
+      }
+
+      .rule-b {
+        right: 13%;
+        bottom: 4%;
+      }
+
+      .bean {
+        position: absolute;
+        z-index: 2;
+        width: 34px;
+        height: 48px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.025);
+        transform: rotate(24deg);
+      }
+
+      .bean::after {
+        position: absolute;
+        top: 7px;
+        left: 15px;
+        width: 1px;
+        height: 31px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.14);
+        content: "";
+      }
+
+      .bean-a {
+        top: 74px;
+        right: 230px;
+      }
+
+      .bean-b {
+        bottom: 82px;
+        left: 250px;
+        transform: rotate(-21deg);
+      }
+
+      .scene {
+        position: absolute;
+        inset: 0;
+        z-index: 5;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        padding: 92px 112px;
+        gap: 34px;
+      }
+
+      .scene-2,
+      .scene-3,
+      .scene-4 {
+        opacity: 0;
+      }
+
+      .scene-kicker {
+        display: inline-flex;
+        align-items: center;
+        width: fit-content;
+        min-height: 34px;
+        padding: 0 13px;
+        border: 1px solid var(--dark-line);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.07);
+        color: var(--canvas-muted);
+        font-family: var(--mono);
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0;
+        text-transform: uppercase;
+      }
+
+      .split {
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(560px, 1.1fr);
+        gap: 58px;
+        align-items: center;
+      }
+
+      .copy-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        min-width: 0;
+      }
+
+      .headline {
+        max-width: 780px;
+        margin: 0;
+        color: var(--canvas-ink);
+        font-family: var(--serif);
+        font-size: 92px;
+        font-weight: 400;
+        line-height: 0.94;
+        letter-spacing: 0;
+      }
+
+      .headline strong {
+        color: #c9c1ff;
+        font-family: inherit;
+        font-style: italic;
+        font-weight: 400;
+      }
+
+      .subcopy {
+        max-width: 620px;
+        margin: 0;
+        color: var(--canvas-muted);
+        font-size: 24px;
+        font-weight: 500;
+        line-height: 1.28;
+      }
+
+      .metric-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 13px;
+        padding-top: 4px;
+      }
+
+      .metric {
+        display: inline-flex;
+        align-items: center;
+        min-height: 46px;
+        padding: 0 17px;
+        border: 1px solid rgba(255, 255, 255, 0.13);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.07);
+        color: var(--canvas-ink);
+        font-size: 17px;
+        font-weight: 750;
+      }
+
+      .metric.is-cold {
+        color: #ffb2a9;
+      }
+
+      .purpose-line {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        max-width: 660px;
+        padding-top: 2px;
+      }
+
+      .purpose-chip {
+        display: inline-flex;
+        align-items: center;
+        min-height: 42px;
+        padding: 0 15px;
+        border: 1px solid rgba(255, 255, 255, 0.13);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--canvas-ink);
+        font-size: 15px;
+        font-weight: 760;
+      }
+
+      .purpose-chip.is-accent {
+        border-color: rgba(123, 108, 255, 0.48);
+        background: rgba(123, 108, 255, 0.18);
+        color: #ddd8ff;
+      }
+
+      .phone-card,
+      .app-window,
+      .insight-board,
+      .message-card {
+        border: 1px solid var(--line);
+        background: #ffffff;
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(16px);
+      }
+
+      .phone-card {
+        position: relative;
+        width: min(430px, 100%);
+        min-height: 560px;
+        justify-self: center;
+        padding: 28px;
+        border-radius: 42px;
+      }
+
+      .phone-top {
+        display: flex;
+        justify-content: center;
+        padding-bottom: 24px;
+      }
+
+      .speaker {
+        width: 88px;
+        height: 8px;
+        border-radius: 999px;
+        background: #d8d1c5;
+      }
+
+      .pitch-bubble {
+        margin-bottom: 18px;
+        padding: 19px 20px;
+        border: 1px solid #ece7df;
+        border-radius: 22px;
+        background: #fff;
+        font-size: 22px;
+        font-weight: 650;
+        line-height: 1.2;
+      }
+
+      .pitch-bubble.owner {
+        margin-left: 72px;
+        background: #f3f0ea;
+        color: #5c5b61;
+        font-weight: 700;
+      }
+
+      .cold-stamp {
+        position: absolute;
+        right: 24px;
+        bottom: 28px;
+        display: grid;
+        place-items: center;
+        width: 146px;
+        height: 146px;
+        border: 3px solid #9b3d34;
+        border-radius: 50%;
+        color: #9b3d34;
+        font-family: var(--mono);
+        font-size: 18px;
+        font-weight: 700;
+        text-align: center;
+        text-transform: uppercase;
+        transform: rotate(-12deg);
+      }
+
+      .app-window {
+        width: 100%;
+        min-height: 610px;
+        overflow: hidden;
+        border-radius: 22px;
+      }
+
+      .window-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 70px;
+        padding: 0 24px;
+        border-bottom: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.78);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-family: var(--serif);
+        font-size: 36px;
+        line-height: 1;
+      }
+
+      .brand-mark {
+        display: grid;
+        width: 34px;
+        height: 34px;
+        border-radius: 11px;
+        background: var(--accent);
+        color: #fff;
+        font-family: var(--sans);
+        font-size: 17px;
+        font-weight: 800;
+        place-items: center;
+      }
+
+      .window-status {
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .app-content {
+        display: grid;
+        gap: 24px;
+        padding: 34px;
+        background: #f6f6f8;
+      }
+
+      .purpose-panel {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr auto 1fr;
+        gap: 12px;
+        align-items: stretch;
+      }
+
+      .purpose-step {
+        min-height: 108px;
+        padding: 18px;
+        border: 1px solid #ece7df;
+        border-radius: 18px;
+        background: #fff;
+      }
+
+      .purpose-step small {
+        display: block;
+        margin-bottom: 9px;
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
+      .purpose-step strong {
+        display: block;
+        color: var(--ink);
+        font-size: 19px;
+        line-height: 1.12;
+      }
+
+      .purpose-arrow {
+        display: grid;
+        color: var(--accent);
+        font-size: 22px;
+        font-weight: 900;
+        place-items: center;
+      }
+
+      .input-shell {
+        display: grid;
+        grid-template-columns: 42px 1fr 142px;
+        gap: 16px;
+        align-items: center;
+        min-height: 74px;
+        padding: 10px 12px 10px 18px;
+        border: 1px solid #dad5ee;
+        border-radius: 999px;
+        background: #fbfbff;
+        box-shadow: 0 0 0 4px rgba(123, 108, 255, 0.08);
+      }
+
+      .search-icon {
+        display: grid;
+        width: 42px;
+        height: 42px;
+        border-radius: 15px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-weight: 800;
+        place-items: center;
+      }
+
+      .typing-line {
+        position: relative;
+        overflow: hidden;
+        width: 0;
+        max-width: max-content;
+        white-space: nowrap;
+        color: var(--ink);
+        font-size: 25px;
+        font-weight: 700;
+      }
+
+      .typing-line::after {
+        display: inline-block;
+        width: 2px;
+        height: 1em;
+        margin-left: 4px;
+        background: var(--accent);
+        content: "";
+        vertical-align: -0.13em;
+      }
+
+      .go-button {
+        display: grid;
+        min-height: 50px;
+        border-radius: 999px;
+        background: var(--ink);
+        color: #fff;
+        font-size: 16px;
+        font-weight: 800;
+        place-items: center;
+      }
+
+      .progress-list {
+        display: grid;
+        gap: 14px;
+      }
+
+      .progress-row {
+        display: grid;
+        grid-template-columns: 34px 1fr auto;
+        gap: 14px;
+        align-items: center;
+        min-height: 68px;
+        padding: 14px 18px;
+        border: 1px solid #ece7df;
+        border-radius: 18px;
+        background: #fff;
+      }
+
+      .check {
+        display: grid;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: var(--fresh-soft);
+        color: var(--fresh);
+        font-weight: 900;
+        place-items: center;
+      }
+
+      .progress-row strong {
+        display: block;
+        color: var(--ink);
+        font-size: 18px;
+      }
+
+      .progress-row span {
+        color: var(--muted);
+        font-size: 15px;
+        font-weight: 600;
+      }
+
+      .progress-row small {
+        color: var(--accent);
+        font-family: var(--mono);
+        font-weight: 700;
+      }
+
+      .insight-board {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+        width: 100%;
+        padding: 24px;
+        border-radius: 28px;
+      }
+
+      .insight-card {
+        min-height: 172px;
+        padding: 24px;
+        border: 1px solid #ece7df;
+        border-radius: 22px;
+        background: #fff;
+      }
+
+      .insight-card.featured {
+        grid-column: span 2;
+        display: grid;
+        grid-template-columns: 96px 1fr;
+        gap: 22px;
+        align-items: center;
+        min-height: 212px;
+        border-color: rgba(47, 125, 91, 0.34);
+        background: linear-gradient(90deg, #fff, #f4fbf6);
+      }
+
+      .signal-icon {
+        display: grid;
+        width: 96px;
+        height: 96px;
+        border-radius: 28px;
+        background: var(--fresh);
+        color: #fff;
+        font-size: 42px;
+        font-weight: 900;
+        place-items: center;
+      }
+
+      .insight-card small,
+      .message-card small {
+        display: block;
+        margin-bottom: 10px;
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
+      .insight-card h2 {
+        margin: 0;
+        color: var(--ink);
+        font-size: 33px;
+        line-height: 1.03;
+      }
+
+      .insight-card p {
+        margin: 11px 0 0;
+        color: #666b74;
+        font-size: 18px;
+        font-weight: 560;
+        line-height: 1.35;
+      }
+
+      .message-card {
+        width: min(860px, 100%);
+        padding: 34px;
+        border-radius: 30px;
+      }
+
+      .message-card p {
+        margin: 0;
+        color: #343840;
+        font-size: 25px;
+        font-weight: 550;
+        line-height: 1.38;
+      }
+
+      .message-card b {
+        color: var(--fresh);
+      }
+
+      .closing-stack {
+        align-items: center;
+        text-align: center;
+      }
+
+      .closing-stack .headline {
+        max-width: 1040px;
+        font-size: 104px;
+      }
+
+      .logo-pair {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 18px;
+      }
+
+      .logo-name {
+        color: var(--canvas-ink);
+        font-family: var(--serif);
+        font-size: 52px;
+        line-height: 1;
+      }
+
+      .logo-plus {
+        color: var(--canvas-muted);
+        font-size: 28px;
+        font-weight: 700;
+      }
+
+      .lightfern {
+        display: inline-flex;
+        align-items: center;
+        gap: 11px;
+        color: var(--canvas-ink);
+        font-size: 32px;
+        font-weight: 800;
+      }
+
+      .lf-mark {
+        display: grid;
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        background: #111;
+        color: #fff;
+        font-family: var(--mono);
+        font-size: 13px;
+        place-items: center;
+      }
+
+      .transition-wipe {
+        position: absolute;
+        inset: 0;
+        z-index: 20;
+        background: var(--ink);
+        transform: translateX(-102%);
+      }
+
+    </style>
+  </head>
+  <body>
+    <main data-composition-id="coffee-demo-slug" data-width="1920" data-height="1080" aria-label="Animated Noodle coffee outreach demo slug">
+      <div class="grain" aria-hidden="true"></div>
+      <div class="rule rule-a" aria-hidden="true"></div>
+      <div class="rule rule-b" aria-hidden="true"></div>
+      <div class="bean bean-a" aria-hidden="true"></div>
+      <div class="bean bean-b" aria-hidden="true"></div>
+
+      <section class="scene scene-1">
+        <div class="split">
+          <div class="copy-stack">
+            <span class="scene-kicker">The problem</span>
+            <h1 class="headline">Generic outreach gets ignored.</h1>
+            <p class="subcopy">A coffee roaster wants to sell beans to a cafe, but a cold supplier pitch sounds like every other pitch.</p>
+            <div class="metric-row">
+              <span class="metric is-cold">Low reply rate</span>
+              <span class="metric">No reason to care</span>
+            </div>
+          </div>
+
+          <div class="phone-card" aria-label="Cold pitch phone mockup">
+            <div class="phone-top"><span class="speaker"></span></div>
+            <div class="pitch-bubble">Hi, I sell premium coffee beans. Can I show you our price list?</div>
+            <div class="pitch-bubble owner">No thanks. I get twenty of these a week.</div>
+            <div class="cold-stamp">Generic pitch</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="scene scene-2">
+        <div class="split">
+          <div class="copy-stack">
+            <span class="scene-kicker">What Noodle does</span>
+            <h1 class="headline">Business name in. Warm angle out.</h1>
+            <p class="subcopy">Noodle researches the target, spots the useful signal, and packages context for Lightfern to draft the outreach.</p>
+            <div class="purpose-line" aria-label="Noodle purpose">
+              <span class="purpose-chip is-accent">Target business</span>
+              <span class="purpose-chip">Sales goal</span>
+              <span class="purpose-chip">Research-backed angle</span>
+            </div>
+          </div>
+
+          <div class="app-window" aria-label="Noodle search interface">
+            <div class="window-bar">
+              <div class="brand"><span class="brand-mark">N</span><span>Noodle</span></div>
+              <div class="window-status">RESEARCH PACKET</div>
+            </div>
+            <div class="app-content">
+              <div class="input-shell">
+                <span class="search-icon">&#8981;</span>
+                <div class="typing-line">Bean & Bloom Cafe</div>
+                <div class="go-button">Find angle</div>
+              </div>
+              <div class="purpose-panel" aria-label="Noodle workflow">
+                <div class="purpose-step">
+                  <small>Input</small>
+                  <strong>Coffee shop name</strong>
+                </div>
+                <div class="purpose-arrow">&rarr;</div>
+                <div class="purpose-step">
+                  <small>Noodle finds</small>
+                  <strong>Why they might care</strong>
+                </div>
+                <div class="purpose-arrow">&rarr;</div>
+                <div class="purpose-step">
+                  <small>Lightfern gets</small>
+                  <strong>A better draft brief</strong>
+                </div>
+              </div>
+              <div class="progress-list">
+                <div class="progress-row">
+                  <span class="check">&check;</span>
+                  <div>
+                    <strong>Public signals</strong>
+                    <span>Website, event posts, local community mentions</span>
+                  </div>
+                  <small>DONE</small>
+                </div>
+                <div class="progress-row">
+                  <span class="check">&check;</span>
+                  <div>
+                    <strong>Buyer context</strong>
+                    <span>What the cafe already seems to care about</span>
+                  </div>
+                  <small>DONE</small>
+                </div>
+                <div class="progress-row">
+                  <span class="check">&check;</span>
+                  <div>
+                    <strong>Outreach handoff</strong>
+                    <span>Specific angle ready for Lightfern</span>
+                  </div>
+                  <small>READY</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="scene scene-3">
+        <div class="split">
+          <div class="copy-stack">
+            <span class="scene-kicker">The output</span>
+            <h1 class="headline">A reason to connect.</h1>
+            <p class="subcopy">Instead of guessing, the roaster gets a specific angle tied to what the cafe already does.</p>
+          </div>
+
+          <div class="insight-board" aria-label="Cafe insight board">
+            <article class="insight-card featured">
+              <div class="signal-icon">&#8599;</div>
+              <div>
+                <small>Best opener</small>
+                <h2>Hosts Coffee & Calisthenics every Saturday.</h2>
+                <p>Lead with a fitness-community tasting instead of a supplier pitch.</p>
+              </div>
+            </article>
+            <article class="insight-card">
+              <small>What they value</small>
+              <h2>Health-conscious regulars</h2>
+              <p>Position single-origin beans as clean, traceable, and post-workout friendly.</p>
+            </article>
+            <article class="insight-card">
+              <small>Suggested action</small>
+              <h2>Offer samples at the next event</h2>
+              <p>Make the first ask small, useful, and tied to their community.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="scene scene-4">
+        <div class="copy-stack closing-stack">
+          <span class="scene-kicker">Warm outreach</span>
+          <h1 class="headline">Noodle prepares the context. Lightfern writes the email.</h1>
+          <div class="message-card" aria-label="Lightfern outreach message">
+            <small>Lightfern draft angle</small>
+            <p>&ldquo;I saw Bean & Bloom runs <b>Coffee & Calisthenics</b>. I roast direct-trade beans for cafes with health-minded regulars, and I&rsquo;d love to bring samples to your next Saturday session.&rdquo;</p>
+          </div>
+          <div class="logo-pair">
+            <span class="logo-name">Noodle</span>
+            <span class="logo-plus">&times;</span>
+            <span class="lightfern"><span class="lf-mark">LF</span>Lightfern</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="transition-wipe" aria-hidden="true"></div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+
+      const tl = gsap.timeline({ paused: true, defaults: { ease: "power3.out" } });
+      const wipe = ".transition-wipe";
+      const stage = document.querySelector('[data-composition-id="coffee-demo-slug"]');
+
+      function fitStage() {
+        const scale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+        stage.style.transform = `translate(-50%, -50%) scale(${scale})`;
+      }
+
+      fitStage();
+      window.addEventListener("resize", fitStage);
+
+      tl.from(".grain", { opacity: 0, duration: 0.45 }, 0);
+      tl.from(".rule-a, .rule-b", { scaleY: 0, opacity: 0, transformOrigin: "50% 0%", duration: 0.8, stagger: 0.12 }, 0.05);
+      tl.from(".bean-a, .bean-b", { y: 20, rotation: 0, opacity: 0, duration: 0.7, stagger: 0.12 }, 0.18);
+
+      tl.from(".scene-1 .scene-kicker", { y: 22, opacity: 0, duration: 0.42 }, 0.25);
+      tl.from(".scene-1 .headline", { y: 42, opacity: 0, duration: 0.62 }, 0.35);
+      tl.from(".scene-1 .subcopy", { y: 24, opacity: 0, duration: 0.5 }, 0.55);
+      tl.from(".scene-1 .metric", { y: 18, opacity: 0, duration: 0.38, stagger: 0.08 }, 0.72);
+      tl.from(".scene-1 .phone-card", { x: 56, scale: 0.96, opacity: 0, duration: 0.62 }, 0.45);
+      tl.from(".scene-1 .pitch-bubble", { y: 22, opacity: 0, duration: 0.36, stagger: 0.16 }, 0.86);
+      tl.from(".scene-1 .cold-stamp", { scale: 1.18, rotation: 4, opacity: 0, duration: 0.42, ease: "back.out(1.7)" }, 1.45);
+
+      tl.to(wipe, { x: "0%", duration: 0.42, ease: "power2.inOut" }, 2.65);
+      tl.set(".scene-1", { opacity: 0 }, 3.08);
+      tl.set(".scene-2", { opacity: 1 }, 3.08);
+      tl.to(wipe, { x: "102%", duration: 0.48, ease: "power2.inOut" }, 3.08);
+      tl.set(wipe, { x: "-102%" }, 3.58);
+
+      tl.from(".scene-2 .scene-kicker", { y: 22, opacity: 0, duration: 0.38 }, 3.2);
+      tl.from(".scene-2 .headline", { y: 42, opacity: 0, duration: 0.58 }, 3.3);
+      tl.from(".scene-2 .subcopy", { y: 24, opacity: 0, duration: 0.44 }, 3.52);
+      tl.from(".scene-2 .purpose-chip", { y: 16, opacity: 0, duration: 0.34, stagger: 0.08 }, 3.76);
+      tl.from(".scene-2 .app-window", { x: 56, scale: 0.97, opacity: 0, duration: 0.6 }, 3.35);
+      tl.to(".typing-line", { width: "22ch", duration: 0.78, ease: "steps(18)" }, 4.02);
+      tl.from(".scene-2 .purpose-step", { y: 16, opacity: 0, duration: 0.34, stagger: 0.09 }, 4.62);
+      tl.from(".scene-2 .purpose-arrow", { scale: 0.6, opacity: 0, duration: 0.24, stagger: 0.09, ease: "back.out(2)" }, 4.7);
+      tl.from(".scene-2 .progress-row", { y: 18, opacity: 0, duration: 0.36, stagger: 0.14 }, 5.06);
+      tl.from(".scene-2 .check", { scale: 0.4, opacity: 0, duration: 0.26, stagger: 0.14, ease: "back.out(2)" }, 5.16);
+
+      tl.to(wipe, { x: "0%", duration: 0.42, ease: "power2.inOut" }, 6.35);
+      tl.set(".scene-2", { opacity: 0 }, 6.78);
+      tl.set(".scene-3", { opacity: 1 }, 6.78);
+      tl.to(wipe, { x: "102%", duration: 0.48, ease: "power2.inOut" }, 6.78);
+      tl.set(wipe, { x: "-102%" }, 7.28);
+
+      tl.from(".scene-3 .scene-kicker", { y: 22, opacity: 0, duration: 0.38 }, 6.9);
+      tl.from(".scene-3 .headline", { y: 42, opacity: 0, duration: 0.58 }, 7.0);
+      tl.from(".scene-3 .subcopy", { y: 24, opacity: 0, duration: 0.44 }, 7.22);
+      tl.from(".scene-3 .insight-board", { x: 52, scale: 0.97, opacity: 0, duration: 0.58 }, 7.08);
+      tl.from(".scene-3 .insight-card", { y: 28, opacity: 0, duration: 0.42, stagger: 0.13 }, 7.56);
+      tl.from(".scene-3 .signal-icon", { scale: 0.72, rotation: -8, opacity: 0, duration: 0.42, ease: "back.out(1.8)" }, 7.82);
+
+      tl.to(wipe, { x: "0%", duration: 0.42, ease: "power2.inOut" }, 9.35);
+      tl.set(".scene-3", { opacity: 0 }, 9.78);
+      tl.set(".scene-4", { opacity: 1 }, 9.78);
+      tl.to(wipe, { x: "102%", duration: 0.48, ease: "power2.inOut" }, 9.78);
+      tl.set(wipe, { x: "-102%" }, 10.28);
+
+      tl.from(".scene-4 .scene-kicker", { y: 22, opacity: 0, duration: 0.38 }, 9.92);
+      tl.from(".scene-4 .headline", { y: 40, opacity: 0, duration: 0.62 }, 10.03);
+      tl.from(".scene-4 .message-card", { y: 28, scale: 0.98, opacity: 0, duration: 0.5 }, 10.36);
+      tl.from(".scene-4 .logo-pair", { y: 20, opacity: 0, duration: 0.42 }, 10.78);
+      tl.to(".scene-4", { opacity: 0, duration: 0.45, ease: "power2.in" }, 11.7);
+
+      window.__timelines["coffee-demo-slug"] = tl;
+
+      const previewTime = new URLSearchParams(window.location.search).get("t");
+      if (previewTime !== null) {
+        const seconds = Number(previewTime);
+        tl.pause(Number.isFinite(seconds) ? seconds : 0);
+      } else {
+        window.addEventListener("load", () => {
+          if (!window.__HYPERFRAMES_PLAYER__) {
+            tl.play(0);
+          }
+        });
+      }
+    </script>
+  </body>
+</html>
