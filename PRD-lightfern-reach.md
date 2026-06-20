@@ -1,262 +1,430 @@
 # PRD — Lightfern Reach
 
 **Working title:** Lightfern Reach (rename freely)
-**One-liner:** A web app where you describe what you're looking for — an ideal customer, investor, startup, or local business — and it searches the web to find matching people/businesses, uses AI to generate notes and a tailored angle, feeds that into Lightfern's auto-completion, then writes and sends a recommendation email **in your own voice**.
+**One-liner:** A web app where you describe who you want to reach, it finds matching people or businesses online, prepares useful research notes and outreach angles, then sends that context into Lightfern so Lightfern can draft the email.
 **Author:** Ammad
 **Date:** 2026-06-20
-**Status:** Draft v3 — web app (pivoted from the Chrome-extension concept; Personality / Voice feature kept as the differentiator)
-**For:** Lightfern GTM Hackathon (London, by Cursor × GTMengineer.dev × Lightfern)
-**Note:** Delivered as a hosted web application (sign in, run, review, send — all in the browser, no install). Council-flagged risks (auto-send / Tavily-as-matcher) are recorded in §12 with light hackathon mitigations, but the core flow is kept as originally designed.
+**Status:** Draft v4 — reframed for Lightfern hackathon
+**For:** Lightfern GTM Hackathon (London, by Cursor x GTMengineer.dev x Lightfern)
+**Core positioning:** Lightfern drafts the emails. Lightfern Reach helps users find the right recipients and gives Lightfern better context.
 
 ---
 
 ## 1. Concept
 
-You open the app, type what you're looking for, and Lightfern Reach finds it, researches it, drafts a personalized email, and sends it — all from one screen. The differentiator is the **Personality / Voice Profile**: every email is written in *your* tone, not the generic ChatGPT register.
+You open the app and type, in normal language, who you want to reach.
+
+Example:
+
+> Investors in London who back AI startups
+
+The app asks one lightweight follow-up:
+
+> What do you want to talk to them about?
+
+Example:
+
+> Our Lightfern hackathon project
+
+Then the app finds possible matches, researches each one, creates a short context packet, and hands that packet to Lightfern. Lightfern is the drafting layer.
 
 **The flow:**
-```
-Input (what you're looking for)
-   → Tavily search finds matching people / businesses
-   → AI (Gemini/OpenAI) summarizes + generates notes, basic info, and an angle/idea
-   → notes fed into Lightfern auto-completion (completes the record + assists drafting)
-   → AI generates the recommendation email — IN YOUR VOICE (Voice Profile)
-   → email is sent to the matched person
+
+```text
+User describes target
+   -> app clarifies goal
+   -> app builds a search brief
+   -> Tavily/search finds matching people or businesses
+   -> AI creates research notes, match reasons, and suggested angles
+   -> Lightfern completes/enriches the record
+   -> user sends the context to Lightfern
+   -> Lightfern drafts the email
 ```
 
-Delivering this as a web app (rather than a browser extension) removes install/sideload friction, gives us a real screen for the results dashboard and Voice Profile editor, and lets the whole multi-step pipeline run server-side without the Manifest V3 service-worker time limit.
+The product should feel like texting an assistant, not filling out a sales form.
 
 ---
 
 ## 2. Goals & non-goals
 
 ### Goals
-- G1 — From a free-text description, find people/businesses that match across the four input types (customer / investor / startup / local business).
-- G2 — Generate useful notes + basic info + a tailored angle for each match via AI.
-- G3 — Run those notes through Lightfern auto-completion to complete the record and assist email drafting.
-- G4 — Draft and send a recommendation email per match, written in the user's own voice (Voice Profile).
-- G5 — Demo the full arc — input → match → notes → Lightfern completion → voiced email → sent — end to end, live in the browser.
 
-### Non-goals (hackathon)
-- NG1 — Multi-touch sequencing / drip campaigns / A/B testing.
-- NG2 — Building our own contact database (Tavily + Lightfern supply discovery/completion).
-- NG3 — Deliverability infrastructure (domain warming, SPF/DKIM/DMARC) — we send through the user's own Gmail.
-- NG4 — CRM sync, team accounts, analytics dashboards.
-- NG5 — Native mobile apps (the web app is responsive; mobile-native is out of scope).
+- G1 — Let the user describe who they want to reach in simple natural language.
+- G2 — Ask only the minimum follow-up questions needed to create a useful search brief.
+- G3 — Find matching people/businesses across four use cases: customers, investors, startups, and local businesses.
+- G4 — Show each match as a clear research card: who they are, why they match, useful notes, suggested angle, and sources.
+- G5 — Use Lightfern auto-completion/enrichment to complete the record where possible.
+- G6 — Hand the researched context into Lightfern so Lightfern can draft the email.
+- G7 — Demo the full arc live in the browser: describe target -> matches -> research cards -> Lightfern handoff -> Lightfern draft.
+
+### Non-goals
+
+- NG1 — The app does not write the final email itself.
+- NG2 — The app does not replace Lightfern's drafting experience.
+- NG3 — No multi-touch sequences, drip campaigns, A/B tests, CRM sync, or analytics dashboard.
+- NG4 — No custom deliverability infrastructure.
+- NG5 — No long onboarding before the user gets value.
 
 ---
 
-## 3. Target users & the four input types
+## 3. Target users & input types
 
-The product accepts any of four "what are you looking for" modes; the pipeline is the same, the prompt framing differs:
+Primary user: a solo founder, operator, SDR, agency owner, or builder who needs to find a small number of relevant people and prepare high-quality context for outreach.
 
-| Input type | Example query | Who's searching | Email goal |
+| Input type | Example user input | What the app finds | Lightfern use |
 |---|---|---|---|
-| **Ideal customer** | "Heads of Ops at UK 3PL / freight firms, 50–500 staff" | Founder / SDR doing outbound | Pitch / book a call |
-| **Investor** | "Pre-seed investors backing vertical SaaS in logistics, £100k–£500k, UK/EU" | Founder raising a round | Warm intro / pitch |
-| **Startup** | "Seed-stage AI compliance startups in London" | BD / partnerships / competitor scout | Partnership / collab |
-| **Local business** | "Independent coffee shops in Shoreditch without a modern website" | Agency / freelancer | Service pitch |
+| **Customers** | "Heads of Ops at UK logistics companies with 50-500 employees" | Likely buyers | Draft a sales intro |
+| **Investors** | "Pre-seed investors in London who back AI sales tools" | Relevant investors | Draft a founder intro |
+| **Startups** | "Seed-stage AI compliance startups in London" | Companies for partnerships or research | Draft a partnership note |
+| **Local businesses** | "Independent coffee shops in Shoreditch with outdated websites" | Local business leads | Draft a service pitch |
 
-Primary persona is the **solo / early-stage founder or operator** who lives in the browser + Gmail, has no enterprise sales stack, and needs a small number of high-quality, personalized emails.
+The user should not need to understand filters up front. They should be able to type what they mean.
 
 ---
 
 ## 4. Core user flow
 
-```
-First run (one-time):
-  1. Sign in (Google sign-in; same account used for Gmail send).
-  2. Create your Voice Profile (Personality) → done.
+### First screen
 
-Every run:
-  1. Open the app → pick input type → type what you're looking for
-  2. Tavily search → returns candidate people / businesses matching the criteria
-  3. AI (Gemini/OpenAI) → per match: summary, basic info, a tailored angle/idea
-  4. Lightfern auto-completion → completes the record + assists drafting
-  5. AI → generates the recommendation email, written in the selected Voice Profile
-  6. Email is sent to the matched person (see §12 for the review-vs-auto-send toggle)
+The app opens on one main question:
+
+> Who do you want to reach?
+
+Placeholder examples:
+
+- "Investors in London who fund AI startups"
+- "Coffee shops in Shoreditch with outdated websites"
+- "Heads of Operations at UK logistics companies"
+
+The user can optionally choose a target type:
+
+- Customers
+- Investors
+- Startups
+- Local businesses
+
+If they do not choose one, the app infers it.
+
+### Lightweight follow-up
+
+After the first answer, the app asks:
+
+> What do you want to talk to them about?
+
+This captures the outreach goal, not the final email copy.
+
+Examples:
+
+- "Our Lightfern hackathon project"
+- "A quick intro to our logistics onboarding product"
+- "Website redesign services"
+- "Potential partnership"
+
+### Live search brief
+
+As the user answers, the app shows a small brief:
+
+```text
+Looking for: pre-seed investors
+Location: London / UK
+Interest: AI sales tools
+Goal: introduce our Lightfern hackathon project
+Output: research cards for Lightfern
 ```
 
-The results dashboard renders one card per match and streams them in as the pipeline finishes each, so the user sees progress instead of a spinner.
+The user can edit the brief before running the search.
+
+### Search and results
+
+The user clicks:
+
+> Find matches
+
+The dashboard streams in cards as each match is ready.
+
+Each card shows:
+
+- Name / company
+- Why this matches
+- Useful notes
+- Suggested outreach angle
+- Source links
+- Lightfern completion status
+- Primary action: **Draft in Lightfern**
+
+The app should not show a generated final email. It should show the context Lightfern will use.
 
 ---
 
-## 5. ★ Feature spec: Personality / Voice Profile
+## 5. Fluid UX principles
 
-> The kept feature: a saved "Personality" so the AI writes the email in the user's tone, not a generic one. This is the product's differentiator.
+The experience should feel simple and conversational.
 
-### 5.1 What it is
-A reusable, structured description of how the user writes, captured once and applied to every generated email. The user can keep more than one (e.g. "Investor voice" vs "Sales voice") and pick which to use per run.
+### Principle 1 — Start with one question
 
-### 5.2 How the user creates it (setup UX)
-On first run (editable anytime in Settings), via three lightweight inputs:
+Do not start with a form full of fields. Start with:
 
-1. **About me** (free text) — name, role, company, what they do, one-line value prop, a sign-off they like. Grounds *what* the email says.
-2. **Tone dials** (5 sliders, 1–5) — fast, visual, no writing required:
-   - **Formality** — casual ↔ formal
-   - **Warmth** — direct/transactional ↔ warm/personal
-   - **Length** — terse (≤60 words) ↔ detailed (≤150 words)
-   - **Energy** — calm/measured ↔ enthusiastic
-   - **Playfulness** — straight ↔ witty
-3. **Sound like me** (optional, the magic step) — paste 1–3 emails the user actually wrote. The LLM extracts observable style markers (avg sentence length, formality, emoji/exclamation use, greeting + sign-off patterns, favored phrases, contractions). Pre-fills/overrides the dials.
+> Who do you want to reach?
 
-Presets ("Founder-to-founder", "Polished professional", "Warm & brief") set the dials in one click.
+### Principle 2 — Ask follow-ups only when needed
 
-### 5.3 Data model (`VoiceProfile`)
+If the input is clear, continue. If something important is missing, ask one short question.
+
+Examples:
+
+- Missing goal: "What do you want to talk to them about?"
+- Missing location: "Should I focus on a specific location?"
+- Too broad: "Do you want quality over quantity, or a wider list?"
+
+### Principle 3 — Show the brief before searching
+
+The app should translate the user's messy sentence into a clean brief so the user can trust what will happen.
+
+### Principle 4 — Progressive onboarding
+
+Do not block first use with onboarding.
+
+Ask for sender/company context only when it is needed for the Lightfern handoff:
+
+- Your name
+- Company
+- What you do
+- What this outreach is about
+
+This can appear as a small modal before the first Lightfern draft.
+
+### Principle 5 — Make Lightfern the hero
+
+Use button labels like:
+
+- **Draft in Lightfern**
+- **Send context to Lightfern**
+- **Complete with Lightfern**
+
+Avoid labels like:
+
+- Generate email
+- Write email
+- Send email
+
+---
+
+## 6. Key feature: Research packet for Lightfern
+
+The core output of this app is not an email. It is a structured research packet.
+
+### Research packet fields
+
 ```json
 {
-  "id": "vp_default",
-  "label": "Investor voice",
-  "sender": {
-    "name": "Ammad",
-    "role": "Founder",
-    "company": "Acme",
-    "value_prop": "We help logistics SaaS cut onboarding time by 40%.",
-    "signoff": "Cheers,\nAmmad"
+  "match": {
+    "name": "Jane Smith",
+    "company": "Example Ventures",
+    "role": "Partner",
+    "location": "London",
+    "url": "https://example.com"
   },
-  "tone": { "formality": 2, "warmth": 4, "length": 2, "energy": 3, "playfulness": 3 },
-  "style_markers": {
-    "avg_sentence_words": 14,
-    "uses_contractions": true,
-    "emoji": "rare",
-    "exclamations": "rare",
-    "greeting_pattern": "Hi {firstName},",
-    "signature_phrases": ["quick one", "worth a chat?"]
-  },
-  "hard_rules": ["No buzzwords", "Never more than 130 words", "One clear CTA"]
+  "why_match": "Invests in pre-seed AI tools and has backed sales workflow startups.",
+  "notes": [
+    "Focuses on B2B SaaS at pre-seed.",
+    "Recently wrote about AI in go-to-market workflows.",
+    "Based in London with UK/EU investment focus."
+  ],
+  "suggested_angle": "Mention the Lightfern hackathon project as a fast prototype exploring AI-assisted GTM workflows.",
+  "sources": [
+    "https://example.com/profile",
+    "https://example.com/blog/ai-gtm"
+  ],
+  "lightfern": {
+    "completion_status": "ready",
+    "completed_fields": ["email", "company", "role"]
+  }
 }
 ```
 
-### 5.4 How it shapes the email (prompt injection)
-The Voice Profile is rendered into the LLM style instruction at generation time, alongside the AI notes, Lightfern-completed record, and the match's basic info:
+### Why this matters
 
-```
-SYSTEM: You write outreach emails as a specific person. Match their voice exactly.
-VOICE PROFILE: {rendered VoiceProfile — sender facts, tone dials as adjectives, style markers, hard_rules}
-RECIPIENT: {Lightfern-completed record + AI notes + tailored angle}
-TASK: Write a {length-from-tone}-word email. Lead with the tailored angle. One clear CTA.
-      Use the greeting + sign-off patterns. Obey every hard_rule. Output subject + body only.
-```
-
-### 5.5 Acceptance criteria
-- AC1 — Create, name, edit, delete a Voice Profile; it persists across sessions.
-- AC2 — Two different profiles on the **same** match produce visibly different drafts (tone, length, greeting/sign-off).
-- AC3 — "Sound like me" pasted samples measurably shift output (shorter sentences, contractions on) vs the default preset.
-- AC4 — Every `hard_rule` (word cap, "no buzzwords", etc.) is respected.
-- AC5 — The draft uses the AI-generated angle/notes; it doesn't invent facts not present in the notes.
-
-### 5.6 Stretch
-- Learn from edits: diff the user's edited draft against the generated one and nudge style markers over time.
+Lightfern can draft better emails when it has better context. This app is the research and context layer before Lightfern drafting.
 
 ---
 
-## 6. Functional requirements
+## 7. Functional requirements
 
 | ID | Requirement | Priority |
 |---|---|---|
-| F1 | **Input** — input-type picker (customer / investor / startup / local business) + free-text box. | P0 |
-| F2 | **Search (Tavily)** — find candidate people/businesses matching the criteria; return N candidates with source links. | P0 |
-| F3 | **Notes (LLM)** — per match: summary, basic info, and a tailored angle/idea. | P0 |
-| F4 | **Lightfern auto-completion** — feed notes/record into Lightfern to complete the record + assist drafting. | P0 |
-| F5 | **Voice Profile** — §5. | P0 |
-| F6 | **Email generation (LLM)** — subject + body, written in the selected Voice Profile. | P0 |
-| F7 | **Send** — send the email to the matched person (via the user's Gmail). See §12 toggle. | P0 |
-| F8 | **Results dashboard** — list of match cards: basic info, notes, source links, the generated email; streams in as each match finishes. | P0 |
-| F9 | **Empty/low-confidence state** — honest "no strong matches" rather than padded results. | P1 |
-| F10 | **Compliance footer** — sender identity + opt-out line appended on send. | P1 |
-| F11 | **Multiple Voice Profiles + per-run picker.** | P1 |
-| F12 | **Auth** — Google sign-in; gates the app and provides the Gmail send scope. | P1 |
+| F1 | **Conversational input** — one main prompt: "Who do you want to reach?" | P0 |
+| F2 | **Optional target type** — customers / investors / startups / local businesses. | P0 |
+| F3 | **Clarifying follow-up** — ask what the user wants to talk about. | P0 |
+| F4 | **Search brief** — show the interpreted target, location, interest, and goal before running. | P0 |
+| F5 | **Search** — find candidate people/businesses with source links. | P0 |
+| F6 | **Research notes** — generate summary, why-match, useful notes, and suggested angle. | P0 |
+| F7 | **Lightfern completion** — send match/notes into Lightfern to complete or enrich the record. | P0 |
+| F8 | **Results dashboard** — stream cards as each match is ready. | P0 |
+| F9 | **Lightfern handoff** — send selected match context to Lightfern for drafting. | P0 |
+| F10 | **Empty state** — show honest "no strong matches" instead of weak filler results. | P1 |
+| F11 | **Progressive sender context** — collect name/company/what you do only when needed. | P1 |
+| F12 | **Auth** — optional for MVP; required if Lightfern/Gmail account linking needs it. | P1 |
 
 ---
 
-## 7. Architecture
+## 8. Suggested app screens
 
+### Screen 1 — Conversational search
+
+Main elements:
+
+- Large input: "Who do you want to reach?"
+- Optional chips: Customers, Investors, Startups, Local businesses
+- Small examples under the input
+- Continue button
+
+### Screen 2 — Clarify goal
+
+Main elements:
+
+- Follow-up question: "What do you want to talk to them about?"
+- User answer field
+- Live search brief on the side or below
+- Button: "Find matches"
+
+### Screen 3 — Results dashboard
+
+Main elements:
+
+- Search brief summary at top
+- Match cards streaming in
+- Confidence or fit indicator
+- Source links
+- Suggested angle
+- Button: "Draft in Lightfern"
+
+### Screen 4 — First Lightfern handoff modal
+
+Only if needed:
+
+- Name
+- Company
+- What you do
+- Outreach goal
+- Button: "Send context to Lightfern"
+
+---
+
+## 9. Architecture
+
+```text
+Web app (Next.js + React)
+  - conversational input
+  - search brief UI
+  - results dashboard
+  - Lightfern handoff action
+
+Backend / API routes
+  - orchestrates search -> notes -> Lightfern completion
+  - stores temporary run state
+  - keeps API keys server-side
+  - streams result cards as they are ready
+
+External APIs
+  - Tavily/search for discovery
+  - Gemini/OpenAI for summaries, match reasons, and angles
+  - Lightfern for completion and drafting handoff
 ```
-┌──────────────────────────┐     ┌──────────────────────────────┐     ┌────────────────┐
-│  Web frontend            │     │  Backend / API routes         │     │  External APIs  │
-│  (Next.js + React)       │────▶│  - holds all API keys         │────▶│  Tavily (search)│
-│  - input + type picker   │     │  - orchestrates the pipeline  │     │  Gemini/OpenAI  │
-│  - Voice Profile editor  │     │  - search → notes → Lightfern │     │  Lightfern      │
-│  - results dashboard     │◀────│    → email (streamed)         │     │  Gmail API      │
-│  - send button           │     │  - stores VoiceProfiles+auth  │     └────────────────┘
-└──────────────────────────┘     └──────────────────────────────┘
-        single deployable (frontend + API in one Next.js app)
-```
 
-**Why a server-side pipeline:** keeps API keys off the client, and runs the multi-call pipeline (search → notes → Lightfern → email) in one place with retries, per-call timeouts, and streaming — so one failed match doesn't kill the batch, and the user sees cards appear as they complete. Because it's a normal web server (not an MV3 service worker), there's no ~30s execution cap to design around.
+### Recommended endpoints
 
-### 7.1 Recommended stack (hackathon-fast)
-- **Frontend + backend:** Next.js (App Router) — React UI + API route handlers in one app, deployed to Vercel.
-- **API routes:** `/api/run`, `/api/voice-profiles`, `/api/extract-voice`, `/api/send`.
-- **LLM:** Gemini Flash or GPT-4o-mini class (cheap, fast) — optionally via the Vercel AI SDK / AI Gateway for streaming + provider fallback.
-- **Storage:** Postgres (Vercel Marketplace) or a lightweight KV for Voice Profiles + sessions; browser `localStorage` is acceptable for the MVP.
-- **Auth + send:** Google sign-in (NextAuth/Auth.js) with a Gmail send scope; send via the Gmail API.
-
-### 7.2 Endpoints
-- `POST /api/run` — `{ inputType, query, voiceProfileId }` → streams match cards (search → notes → Lightfern complete → email) as each finishes.
-- `GET/POST/PUT/DELETE /api/voice-profiles` — CRUD for Personalities.
-- `POST /api/extract-voice` — `{ sampleEmails[] }` → inferred `style_markers` + dial suggestions.
-- `POST /api/send` — `{ matchId, subject, body }` → sends via the user's Gmail.
+- `POST /api/brief` — turns conversation input into a structured search brief.
+- `POST /api/run` — runs search + research + Lightfern completion and streams cards.
+- `POST /api/lightfern/handoff` — sends selected research packet to Lightfern for drafting.
+- `GET /api/run/:id` — returns current run state.
 
 ---
 
-## 8. Non-functional requirements
+## 10. Hackathon scope
 
-- **Security:** No API key reaches the browser; all third-party calls go through the server. Gmail OAuth scoped to send only; sessions are server-validated.
-- **Reliability:** Pipeline runs server-side with retries + per-call timeouts; results stream in so one failed match doesn't kill the batch.
-- **Cost control:** Cap matches per run (default 25); cap Tavily calls; cache where safe. Show the count before running.
-- **Latency:** Stream results as they complete; first card in a few seconds, not after the whole batch.
+### Must-have
 
----
+- Conversational first input
+- One follow-up question
+- Search brief preview
+- Search results as match cards
+- AI-generated notes and suggested angle
+- Lightfern completion/handoff
+- "Draft in Lightfern" action
 
-## 9. Hackathon scope: MVP vs cut
+### Nice-to-have
 
-**Must-have (P0):** F1–F8 + Voice Profile (§5).
-**Nice-to-have (P1):** F9 empty-state, F10 footer, F11 multiple profiles, F12 auth, "Sound like me" extraction.
-**Cut freely:** sequencing, CSV export, learn-from-edits.
+- Saved sender/company context
+- Editable search brief
+- Empty/low-confidence state
+- Auth/account linking
+- Batch select multiple cards for Lightfern
 
----
+### Cut freely
 
-## 10. Demo script (target < 90s)
-
-1. Open the web app and show my saved **Voice Profile** (founder-to-founder, brief, warm).
-2. Pick input type **Investor**, type: *"Pre-seed investors backing vertical SaaS in logistics, £100k–£500k, UK/EU."*
-3. Watch match cards stream onto the dashboard: Tavily finds partners, AI writes notes + an angle, Lightfern completes the record.
-4. Open a generated email — it uses the angle **and sounds like me**.
-5. Swap to "Polished professional" profile → regenerate → visibly different tone. (The wow.)
-6. Click **Send** → it goes out through my Gmail. Done.
-
----
-
-## 11. Success metrics
-
-**Hackathon:** full input → match → notes → Lightfern completion → voiced email → sent runs live in the browser; the Voice Profile swap visibly changes the same email; Lightfern's auto-completion is visibly part of the pipeline.
-
-**Product (if continued):** reply rate vs a generic-template control; % of emails sent with ≤1 edit.
+- Voice Profile
+- Writing final email inside this app
+- Sending emails from this app
+- Multi-touch campaigns
+- CRM sync
+- Analytics
 
 ---
 
-## 12. Known risks & light mitigations
+## 11. Demo script (target < 90s)
 
-These were flagged by the `/council` review. The core flow is kept by choice; mitigations are optional hackathon hardening.
+1. Open the app.
+2. Type: "Pre-seed investors in London who back AI sales tools."
+3. App asks: "What do you want to talk to them about?"
+4. Type: "Our Lightfern hackathon project."
+5. App shows the search brief.
+6. Click **Find matches**.
+7. Match cards stream in with names, why they match, notes, suggested angle, and sources.
+8. Open one card and click **Draft in Lightfern**.
+9. Lightfern receives the context and drafts the email.
 
-| Risk | Light mitigation (optional) |
+The wow moment: the app makes Lightfern smarter by giving it researched, structured context.
+
+---
+
+## 12. Success metrics
+
+### Hackathon success
+
+- User can describe a target in natural language.
+- App turns that into a clear search brief.
+- App finds plausible matches.
+- App produces useful research cards.
+- Lightfern is visibly part of completion/drafting.
+- The final email draft is produced by Lightfern, not by this app.
+
+### Product success if continued
+
+- % of match cards accepted for Lightfern drafting.
+- % of Lightfern drafts that require little editing.
+- Reply rate compared with outreach drafted without research context.
+- Time from "who do you want to reach?" to first Lightfern draft.
+
+---
+
+## 13. Risks & mitigations
+
+| Risk | Mitigation |
 |---|---|
-| **Auto-send to a stranger** is distrusted and raises GDPR/PECR concerns | Offer a **"review before send" toggle** (default on for real use, off for the demo). Keep the compliance footer (F10). |
-| **Tavily isn't a contact database** — match quality varies, emails may be missing/guessed | Use Lightfern auto-completion to fill/verify contact fields; show source links per card; honest empty-state (F9). |
-| **Hallucinated facts** in notes/email | AC5: email uses only the generated notes; show the source so the user can sanity-check before send. |
-| **Gmail send** restricted-scope OAuth verification friction | For the demo, consider **"create a Gmail draft"** instead of live send, or a single pre-authorized test account. |
-| **Per-run cost** unbounded on broad queries | Hard cap matches per run (default 25); cap Tavily/LLM calls. |
+| Search results are weak or too broad | Show the interpreted search brief first; let the user edit it before running. |
+| Tavily/search is not a contact database | Use Lightfern to complete/enrich records; show source links and confidence. |
+| AI invents details | Research cards must include sources; notes should be grounded in source links. |
+| App appears to compete with Lightfern | Do not generate final emails; make the primary action "Draft in Lightfern." |
+| User feels blocked by setup | Use progressive onboarding only when Lightfern handoff needs sender context. |
 
 ---
 
-## 13. Open questions
+## 14. Open questions
 
-1. **Send vs review** — default to auto-send (original), or ship the review toggle on?
-2. **Send mechanism** — Gmail API live send vs. create a Gmail draft (lower OAuth-verification friction).
-3. **Voice Profile storage** — server DB (survives device, ties to the signed-in account) vs. browser `localStorage` (simpler). Default: `localStorage` for MVP, DB if auth lands.
-4. **Lightfern access** — confirm whether we hit Lightfern via MCP tools or REST, and what auth the hackathon provides.
+1. **Lightfern integration** — do we hand off via API, MCP tool, browser deep link, or demo mock?
+2. **Completion vs drafting** — does Lightfern first complete the record, draft the email, or both in one step?
+3. **Auth** — is login needed for the hackathon demo, or can we run with a demo Lightfern account?
+4. **Search scope** — should the MVP cap at 5-10 high-quality matches instead of 25?
+5. **Review surface** — should users edit the search brief before search, or only rerun after seeing weak results?
 
 ---
-
-*Earlier evaluations for reference: `council-out/2026-06-20-lightfern-gtm-outreach-extension.md` (original, 61/100) and `council-out/2026-06-20-lightfern-reach-refined.md` (refined, 58/100).*

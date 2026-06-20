@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Noodle - Find the Right Reach</title>
+    <meta
+      name="description"
+      content="Noodle finds the right people, prepares research context, and hands it to Lightfern for drafting."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="upgrade-bar">
+      <p>Noodle got an upgrade <span aria-hidden="true">✦</span> Built for the Lightfern GTM Hackathon. <a href="#access">Open</a></p>
+    </div>
+
+    <header class="site-header">
+      <a class="wordmark" href="#top" aria-label="Noodle home">Noodle</a>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-prism" data-prism aria-hidden="true"></div>
+        <div class="hero-inner" data-reveal>
+          <h1 id="hero-title"><em>Own</em> Your<br />Outreach.</h1>
+          <p>
+            Noodle helps you find the right people, understand why they matter,
+            and prepare the context Lightfern needs to draft.
+          </p>
+          <p class="partner-line">
+            Works with <a href="https://lightfern.com/" target="_blank" rel="noreferrer">Lightfern</a>
+            to connect you to the people you actually want.
+          </p>
+          <button class="waitlist-button" type="button" data-open-waitlist>
+            Find my first warm lead
+            <span aria-hidden="true">→</span>
+          </button>
+          <div class="vip-entry" id="access">
+            <span>Have a VIP access code?</span>
+            <button type="button" data-vip-trigger>Enter it here</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="cohort-band" aria-labelledby="countdown-title">
+        <div class="rule"><span></span></div>
+        <div class="glow" aria-hidden="true"></div>
+        <div class="cohort-inner" data-reveal>
+          <p class="eyebrow" id="countdown-title"><span></span> Next cohort admitted in</p>
+          <div class="countdown" aria-live="polite">
+            <div>
+              <strong data-hours>10</strong>
+              <small>Hours</small>
+            </div>
+            <i aria-hidden="true">:</i>
+            <div>
+              <strong data-minutes>52</strong>
+              <small>Minutes</small>
+            </div>
+            <i aria-hidden="true">:</i>
+            <div>
+              <strong data-seconds>13</strong>
+              <small>Seconds</small>
+            </div>
+          </div>
+        </div>
+        <div class="rule bottom"><span></span></div>
+      </section>
+
+      <section class="dark-copy">
+        <p data-reveal>
+          Noodle reads the web, finds the people worth reaching, and turns each
+          match into a clean packet Lightfern can use.
+        </p>
+      </section>
+
+      <section class="agent-section" id="demo">
+        <div class="agent-copy" data-reveal>
+          <h2>One Brief.<br />Every warm lead.</h2>
+          <p>
+            Describe an investor, customer, startup, or local business. Noodle
+            searches, researches, sends notes through Lightfern completion, and
+            hands off the context for drafting.
+          </p>
+        </div>
+        <div class="agent-card" data-reveal>
+          <div class="terminal-top">
+            <span></span>
+            <span></span>
+            <span></span>
+            <strong>run / outreach</strong>
+          </div>
+          <div class="terminal-lines">
+            <p><b>input</b> pre-seed logistics SaaS investors, UK/EU</p>
+            <p><b>search</b> 12 strong matches found</p>
+            <p><b>lightfern</b> record completed with 4 verified sources</p>
+            <p><b>angle</b> mention AI-assisted GTM workflow research</p>
+            <p><b>handoff</b> context ready for Lightfern</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="voice-section">
+        <div class="voice-card" data-reveal>
+          <p class="eyebrow"><span></span> Same search, clearer context</p>
+          <div class="voice-switch" role="tablist" aria-label="Research packet selector">
+            <button class="is-active" data-voice="founder" type="button">Investor</button>
+            <button data-voice="polished" type="button">Customer</button>
+          </div>
+          <h3 data-draft-subject>Northstar Ventures</h3>
+          <p data-draft-body>
+            Why they match: pre-seed investor with logistics software interest.
+            Suggested angle: share the Lightfern hackathon project as a fast
+            prototype for AI-assisted GTM research and drafting.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <dialog class="waitlist-modal" aria-labelledby="waitlist-title">
+      <form method="dialog">
+        <button class="close-button" aria-label="Close">×</button>
+        <h2 id="waitlist-title">Start with your first warm lead</h2>
+        <p>Get access to the hosted Lightfern Reach demo and prepare your first research packet for Lightfern.</p>
+        <label>
+          Email
+          <input type="email" placeholder="you@company.com" />
+        </label>
+        <button class="waitlist-button" value="submit">Send my invite <span aria-hidden="true">→</span></button>
+      </form>
+    </dialog>
+
+    <script type="module" src="./script.js"></script>
+  </body>
+</html>
