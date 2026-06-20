@@ -1,4 +1,4 @@
-/** Backend API client — the only module that talks to the Lightfern Reach API. */
+/** Backend API client — the only module that talks to the Noodle Reach API. */
 
 export const BASE_URL =
   (typeof localStorage !== "undefined" && localStorage.getItem("noodle-api")) ||

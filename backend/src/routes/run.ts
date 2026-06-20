@@ -3,6 +3,7 @@ import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { container } from '../container';
 import { executeRun } from '../orchestrator';
+import { corsOriginHeader } from '../utils/cors';
 import { SSEStream } from '../utils/sse';
 import { config } from '../config';
 import type { SearchBrief, ConversationInput } from '../types';
@@ -60,7 +61,7 @@ export async function runRoutes(app: FastifyInstance) {
 
     // Take over the socket and stream SSE.
     reply.hijack();
-    const sse = new SSEStream(reply);
+    const sse = new SSEStream(reply, corsOriginHeader(req.headers.origin));
     const heartbeat = setInterval(() => sse.ping(), 15000);
     let aborted = false;
     // Detect a genuine client disconnect on the RESPONSE socket. (Listening on
