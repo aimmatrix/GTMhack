@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lightfern Reach — client smoke test</title>
+    <style>
+      :root {
+        font-family: system-ui, sans-serif;
+        color: #111;
+        background: #f6f7fb;
+      }
+      body {
+        max-width: 720px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+      button {
+        padding: 0.6rem 1rem;
+        font-size: 1rem;
+        cursor: pointer;
+      }
+      #status {
+        margin: 1rem 0;
+        color: #444;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 1rem;
+        margin: 0.75rem 0;
+      }
+      .card h3 {
+        margin: 0 0 0.25rem;
+      }
+      pre {
+        background: #1e1e1e;
+        color: #d4d4d4;
+        padding: 1rem;
+        border-radius: 8px;
+        overflow: auto;
+        font-size: 0.85rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Lightfern Reach client smoke test</h1>
+    <p>
+      Start the backend with <code>npm run dev</code> (port 8787), then click
+      <strong>Run demo</strong>. Cards should stream in below.
+    </p>
+    <label>
+      API base URL
+      <input id="baseUrl" type="url" value="http://localhost:8787" style="width: 100%; margin-top: 0.25rem" />
+    </label>
+    <p><button id="runBtn">Run demo</button></p>
+    <div id="status">Idle.</div>
+    <div id="cards"></div>
+    <pre id="log"></pre>
+
+    <script type="module">
+      import { createClient } from './lightfernClient.ts';
+
+      const statusEl = document.getElementById('status');
+      const cardsEl = document.getElementById('cards');
+      const logEl = document.getElementById('log');
+      const baseInput = document.getElementById('baseUrl');
+
+      function log(msg) {
+        logEl.textContent += msg + '\n';
+      }
+
+      document.getElementById('runBtn').addEventListener('click', async () => {
+        cardsEl.innerHTML = '';
+        logEl.textContent = '';
+        statusEl.textContent = 'Starting…';
+
+        const client = createClient({ baseUrl: baseInput.value.trim() });
+
+        try {
+          const health = await client.health();
+          log('health: ' + JSON.stringify(health));
+
+          const brief = await client.buildBrief({
+            description: 'pre-seed investors in London who back AI sales tools',
+            targetType: 'investors',
+            goal: 'introduce our Lightfern hackathon project',
+            location: 'London',
+          });
+          log('brief id: ' + brief.id);
+
+          const result = await client.streamRun(
+            { brief },
+            {
+              onRun: (runId) => {
+                statusEl.textContent = 'Run ' + runId + ' started…';
+              },
+              onStatus: (message) => {
+                statusEl.textContent = message;
+              },
+              onCard: (card) => {
+                const div = document.createElement('div');
+                div.className = 'card';
+                div.innerHTML =
+                  '<h3>' +
+                  card.match.name +
+                  '</h3>' +
+                  '<p>' +
+                  (card.match.role || '') +
+                  ' · ' +
+                  (card.match.company || '') +
+                  '</p>' +
+                  '<p><em>' +
+                  card.why_match +
+                  '</em></p>';
+                cardsEl.appendChild(div);
+              },
+              onDone: (_runId, stats) => {
+                statusEl.textContent =
+                  'Done — researched ' + stats.researched + ' / found ' + stats.found;
+              },
+            },
+          );
+
+          log('done: ' + JSON.stringify(result.stats));
+
+          if (result.cards[0]) {
+            const handoff = await client.handoff({ packet: result.cards[0] });
+            log('handoff mode: ' + handoff.mode + ' url: ' + handoff.gmailUrl);
+          }
+        } catch (err) {
+          statusEl.textContent = 'Error: ' + err.message;
+          log(String(err));
+        }
+      });
+    </script>
+  </body>
+</html>
