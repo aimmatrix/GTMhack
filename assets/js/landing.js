@@ -252,13 +252,57 @@ $$("[data-reveal]").forEach((node) => observer.observe(node));
 const reachInput = $("[data-reach-form] input[name='target']");
 if (reachInput) {
   let promptIndex = 0;
-  reachInput.placeholder = targetPrompts[promptIndex];
+  let typedLength = 0;
+  let deleting = false;
+  let pausedUntil = 0;
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  setInterval(() => {
-    if (document.activeElement === reachInput || reachInput.value.trim()) return;
+  const updatePrompt = () => {
+    if (document.activeElement === reachInput || reachInput.value.trim()) {
+      window.setTimeout(updatePrompt, 300);
+      return;
+    }
+
+    const prompt = targetPrompts[promptIndex];
+    if (reducedMotion) {
+      reachInput.placeholder = prompt;
+      return;
+    }
+
+    const now = Date.now();
+    if (now < pausedUntil) {
+      window.setTimeout(updatePrompt, 120);
+      return;
+    }
+
+    reachInput.placeholder = prompt.slice(0, typedLength);
+
+    if (!deleting && typedLength < prompt.length) {
+      typedLength += 1;
+      window.setTimeout(updatePrompt, 58 + Math.random() * 36);
+      return;
+    }
+
+    if (!deleting && typedLength === prompt.length) {
+      deleting = true;
+      pausedUntil = now + 1200;
+      window.setTimeout(updatePrompt, 120);
+      return;
+    }
+
+    if (deleting && typedLength > 0) {
+      typedLength -= 1;
+      window.setTimeout(updatePrompt, 28 + Math.random() * 24);
+      return;
+    }
+
     promptIndex = (promptIndex + 1) % targetPrompts.length;
-    reachInput.placeholder = targetPrompts[promptIndex];
-  }, 2200);
+    deleting = false;
+    pausedUntil = now + 240;
+    window.setTimeout(updatePrompt, 120);
+  };
+
+  updatePrompt();
 }
 
 $("[data-reach-form]")?.addEventListener("submit", (event) => {
