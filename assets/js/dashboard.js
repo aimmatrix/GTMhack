@@ -1,4 +1,4 @@
-import { buildBrief, streamRun } from "./api.js";
+import { streamRun } from "./api.js";
 import {
   clearPackets,
   setMatchCount,
@@ -400,19 +400,20 @@ async function runReachSearch({ fallback = true } = {}) {
   showSearching();
   setActiveNav("matches");
   setActivePanel("matches");
-  setStatus("Building search brief");
+  setStatus(`Turning "${values.target}" into a search brief`);
 
   try {
-    const brief = await buildBrief({
-      description: values.target,
-      goal: values.goal || undefined,
-    });
-
-    fillBriefPanel(brief, "Searching for matches");
-
     await streamRun(
-      { brief },
       {
+        input: {
+          description: values.target,
+          goal: values.goal || undefined,
+        },
+      },
+      {
+        onRun: (_runId, brief) => {
+          fillBriefPanel(brief, "Searching public signals");
+        },
         onStatus: (message) => setStatus(message),
         onCard: (card) => {
           renderPacket(card);
