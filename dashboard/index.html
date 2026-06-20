@@ -17,16 +17,12 @@
     />
     <link rel="stylesheet" href="/assets/css/dashboard.css" />
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
-    <script type="module" src="/assets/js/dashboard.js"></script>
+    <script type="module" src="/assets/js/dashboard.js?v=seamless-2"></script>
   </head>
   <body class="chat-collapsed">
     <div class="dashboard-shell">
       <aside class="sidebar" aria-label="Noodle navigation">
         <a class="brand" href="/" aria-label="Noodle home">
-          <img
-            src="https://api.dicebear.com/9.x/bottts-neutral/svg?seed=Noodle&backgroundColor=8174ff,6c5cff&radius=18"
-            alt=""
-          />
           <span>Noodle</span>
         </a>
 
@@ -58,20 +54,20 @@
           </button>
         </nav>
 
-        <section class="gift-card" aria-label="Gift access card">
-          <button class="dismiss-card" type="button" aria-label="Dismiss gift card">
+        <section class="gift-card" aria-label="Current packet status" data-dismissible-card>
+          <button class="dismiss-card" type="button" aria-label="Dismiss packet status" data-dismiss-card>
             <i data-lucide="x" aria-hidden="true"></i>
           </button>
-          <div class="gift-icon" aria-hidden="true">N</div>
-          <h2>Invite a GTM Teammate</h2>
-          <p>Share 2 one-month Noodle Reach trials with people building warm outbound.</p>
-          <button class="copy-code" type="button" data-copy-code>
-            <span>ANGELA-GIFT</span>
-            <i data-lucide="copy" aria-hidden="true"></i>
-          </button>
+          <div class="gift-icon" aria-hidden="true">LF</div>
+          <h2>Packet Status</h2>
+          <p data-sidebar-status>Brief ready. Run matches to prepare Noodle context.</p>
+          <div class="copy-code" aria-label="Handoff status">
+            <span>PREP LAYER</span>
+            <i data-lucide="file-check-2" aria-hidden="true"></i>
+          </div>
           <small>
             <i data-lucide="clock" aria-hidden="true"></i>
-            next code in <b>10d : 09h</b>
+            no email copy until <b>Noodle</b>
           </small>
         </section>
 
@@ -90,21 +86,29 @@
           <span>Noodle</span>
         </div>
 
-        <section class="reach-workspace" aria-labelledby="dashboard-title">
+        <section class="reach-workspace dashboard-view is-active" aria-labelledby="dashboard-title" data-view-panel="matches">
           <div class="workspace-heading">
             <p>Find Matches</p>
-            <h1 id="dashboard-title">Who should we reach first?</h1>
+            <h1 id="dashboard-title" data-dashboard-title>Who should we reach first?</h1>
           </div>
+
+          <section class="run-summary" data-run-summary hidden aria-live="polite">
+            <div>
+              <small>Noodle is working on</small>
+              <h2 data-run-target>Pre-seed investors in London who back AI sales tools</h2>
+              <p data-run-message>Finding the strongest matches and context for Lightfern.</p>
+            </div>
+            <button type="button" data-refine-search>Refine search</button>
+          </section>
 
           <form class="reach-builder" data-reach-builder>
             <label class="reach-input reach-input-primary">
               <span>Target</span>
-              <input
+              <textarea
                 name="target"
-                type="text"
                 autocomplete="off"
-                value="Pre-seed investors in London who back AI sales tools"
-              />
+                rows="2"
+              >Pre-seed investors in London who back AI sales tools</textarea>
             </label>
             <label class="reach-input">
               <span>Goal</span>
@@ -114,6 +118,42 @@
                 autocomplete="off"
                 value="Introduce Noodle's outreach workflow"
               />
+            </label>
+            <label class="reach-input">
+              <span>Offering</span>
+              <input
+                name="offer"
+                type="text"
+                autocomplete="off"
+                value="A prep layer that gives Lightfern better context"
+              />
+            </label>
+            <label class="reach-input">
+              <span>Why now</span>
+              <input
+                name="whyNow"
+                type="text"
+                autocomplete="off"
+                value="Outbound quality depends on better research signals"
+              />
+            </label>
+            <label class="reach-input">
+              <span>Outcome</span>
+              <input
+                name="outcome"
+                type="text"
+                autocomplete="off"
+                value="Start a useful conversation"
+              />
+            </label>
+            <label class="reach-input">
+              <span>Tone</span>
+              <select name="tone">
+                <option selected>Warm and specific</option>
+                <option>Founder direct</option>
+                <option>Polished operator</option>
+                <option>Concise and curious</option>
+              </select>
             </label>
             <button class="primary-action" type="submit">
               Find matches
@@ -178,12 +218,28 @@
                 <p data-brief-target>pre-seed investors in London</p>
               </div>
               <div>
-                <small>Signal</small>
-                <p>AI sales tools, GTM workflow, early-stage SaaS</p>
+                <small>Offering</small>
+                <p data-brief-offer>a prep layer that gives Lightfern better context</p>
               </div>
               <div>
                 <small>Goal</small>
                 <p data-brief-goal>introduce noodle's outreach workflow</p>
+              </div>
+              <div>
+                <small>Why now</small>
+                <p data-brief-why>outbound quality depends on better research signals</p>
+              </div>
+              <div>
+                <small>Desired outcome</small>
+                <p data-brief-outcome>start a useful conversation</p>
+              </div>
+              <div>
+                <small>Tone</small>
+                <p data-brief-tone>warm and specific</p>
+              </div>
+              <div>
+                <small>Relevant signals</small>
+                <p data-brief-signal>AI sales tools, GTM workflow, early-stage SaaS</p>
               </div>
               <div>
                 <small>Output</small>
@@ -195,43 +251,158 @@
           <section class="packet-section" aria-labelledby="packets-title">
             <div class="section-title">
               <h2 id="packets-title">Research packets</h2>
-              <span>3 strong matches</span>
+              <span data-match-count>2 packet previews</span>
             </div>
-            <div class="packet-list">
-              <article class="packet-card">
-                <div class="packet-topline">
-                  <h3>Northstar Ventures</h3>
-                  <span>92% match</span>
-                </div>
-                <p>Pre-seed investor with workflow software and AI-enabled sales interest.</p>
-                <ul>
-                  <li>Angle: show how research packets improve Noodle draft quality.</li>
-                  <li>Sources: portfolio notes, partner posts, recent AI investment thesis.</li>
-                </ul>
-                <button type="button" data-send-packet="Northstar Ventures">Draft in Noodle</button>
-              </article>
-
-              <article class="packet-card">
-                <div class="packet-topline">
-                  <h3>Seedcamp</h3>
-                  <span>87% match</span>
-                </div>
-                <p>European seed fund with strong founder tooling and GTM infrastructure fit.</p>
-                <ul>
-                  <li>Angle: position Noodle as the context layer before outbound drafting.</li>
-                  <li>Sources: fund focus, founder resources, recent SaaS portfolio work.</li>
-                </ul>
-                <button type="button" data-send-packet="Seedcamp">Draft in Noodle</button>
-              </article>
-            </div>
+            <div class="packet-list" data-packet-list></div>
           </section>
 
           <section class="handoff-strip" aria-label="Noodle handoff status">
             <div>
               <small>Noodle handoff</small>
-              <p>2 packets complete, 1 waiting on source verification</p>
+              <p data-handoff-status>Packet context only. Noodle drafts after the research is ready.</p>
             </div>
             <button type="button" data-view="drafts">Open drafts</button>
+          </section>
+        </section>
+
+        <section class="reach-workspace dashboard-view tab-workspace" aria-labelledby="packet-library-title" data-view-panel="packets" hidden>
+          <div class="workspace-heading">
+            <p>Research Packets</p>
+            <h1 id="packet-library-title">Context before copy.</h1>
+          </div>
+
+          <section class="library-panel" aria-label="Packet queue">
+            <div class="panel-title">
+              <span>Packet queue</span>
+              <strong>3 ready</strong>
+            </div>
+            <div class="surface-list">
+              <article class="surface-row">
+                <div>
+                  <small>Ready for Lightfern</small>
+                  <h2>Northstar Ventures</h2>
+                  <p>Thesis fit, portfolio context, partner signal, and suggested intro angle prepared.</p>
+                </div>
+                <button type="button" data-view="drafts">Send to Lightfern</button>
+              </article>
+              <article class="surface-row">
+                <div>
+                  <small>Needs source check</small>
+                  <h2>Seedcamp</h2>
+                  <p>Good category fit. Noodle still needs one recent public signal before handoff.</p>
+                </div>
+                <button type="button" data-view="sources">Review sources</button>
+              </article>
+              <article class="surface-row">
+                <div>
+                  <small>Draft brief</small>
+                  <h2>Pre-seed AI sales investor list</h2>
+                  <p>Grouped buyer profile with relevance rules, exclusion notes, and outreach angle.</p>
+                </div>
+                <button type="button" data-view="matches">Refine target</button>
+              </article>
+            </div>
+          </section>
+        </section>
+
+        <section class="reach-workspace dashboard-view tab-workspace" aria-labelledby="draft-handoff-title" data-view-panel="drafts" hidden>
+          <div class="workspace-heading">
+            <p>Lightfern Drafts</p>
+            <h1 id="draft-handoff-title">Packets ready for Lightfern.</h1>
+          </div>
+
+          <section class="library-panel" aria-label="Lightfern handoff queue">
+            <div class="handoff-summary">
+              <small>Noodle boundary</small>
+              <p>Noodle prepares who, why, context, hooks, and cited signals. Lightfern writes the actual email.</p>
+            </div>
+            <div class="surface-list">
+              <article class="surface-row">
+                <div>
+                  <small>Queued</small>
+                  <h2>Northstar Ventures packet</h2>
+                  <p>Use the AI workflow thesis, founder tooling fit, and warm-specific tone.</p>
+                </div>
+                <button type="button">Open in Lightfern</button>
+              </article>
+              <article class="surface-row is-muted">
+                <div>
+                  <small>Waiting</small>
+                  <h2>Seedcamp packet</h2>
+                  <p>Needs one more source before Lightfern should draft from it.</p>
+                </div>
+                <button type="button" data-view="sources">Find signal</button>
+              </article>
+            </div>
+          </section>
+        </section>
+
+        <section class="reach-workspace dashboard-view tab-workspace" aria-labelledby="reach-calendar-title" data-view-panel="calendar" hidden>
+          <div class="workspace-heading">
+            <p>Reach Calendar</p>
+            <h1 id="reach-calendar-title">When to move.</h1>
+          </div>
+
+          <section class="library-panel" aria-label="Reach schedule">
+            <div class="timeline-list">
+              <article class="timeline-item">
+                <time>Tomorrow 09:30</time>
+                <div>
+                  <h2>Review investor packet sources</h2>
+                  <p>Confirm each packet has at least one recent public signal before Lightfern drafting.</p>
+                </div>
+              </article>
+              <article class="timeline-item">
+                <time>Tue 11:00</time>
+                <div>
+                  <h2>Send first packet batch to Lightfern</h2>
+                  <p>Northstar first, then Seedcamp if the missing signal is resolved.</p>
+                </div>
+              </article>
+              <article class="timeline-item">
+                <time>Fri 15:00</time>
+                <div>
+                  <h2>Refresh match list</h2>
+                  <p>Pull new investor signals and remove stale targets before the next outreach cycle.</p>
+                </div>
+              </article>
+            </div>
+          </section>
+        </section>
+
+        <section class="reach-workspace dashboard-view tab-workspace" aria-labelledby="source-library-title" data-view-panel="sources" hidden>
+          <div class="workspace-heading">
+            <p>Source Library</p>
+            <h1 id="source-library-title">Signals worth citing.</h1>
+          </div>
+
+          <section class="library-panel" aria-label="Source signal library">
+            <div class="surface-list">
+              <article class="surface-row">
+                <div>
+                  <small>High confidence</small>
+                  <h2>Partner thesis post</h2>
+                  <p>Use for why-now context when matching AI workflow or GTM infrastructure investors.</p>
+                </div>
+                <span class="source-pill">cite</span>
+              </article>
+              <article class="surface-row">
+                <div>
+                  <small>Medium confidence</small>
+                  <h2>Portfolio pattern</h2>
+                  <p>Several companies point toward sales tooling, founder workflow, and operator productivity.</p>
+                </div>
+                <span class="source-pill">verify</span>
+              </article>
+              <article class="surface-row">
+                <div>
+                  <small>Fresh signal</small>
+                  <h2>Hiring for GTM systems</h2>
+                  <p>Useful angle for buyers who already feel the cost of messy outbound context.</p>
+                </div>
+                <span class="source-pill">new</span>
+              </article>
+            </div>
           </section>
         </section>
       </main>
@@ -260,6 +431,14 @@
           </button>
         </header>
 
+        <div class="assistant-rail" aria-hidden="true">
+          <img
+            src="https://api.dicebear.com/9.x/bottts-neutral/svg?seed=Noodle&backgroundColor=8174ff,6c5cff&radius=18"
+            alt=""
+          />
+          <span>AI</span>
+        </div>
+
         <section class="assistant-empty" aria-live="polite">
           <p data-assistant-greeting>hey angela.</p>
         </section>
@@ -282,6 +461,74 @@
         </form>
       </aside>
     </div>
+
+    <dialog class="settings-dialog" aria-labelledby="settings-title" data-settings-dialog>
+      <div class="settings-shell">
+        <header class="settings-header">
+          <div>
+            <span>Settings</span>
+            <h2 id="settings-title">Prep rules for Lightfern</h2>
+          </div>
+          <button class="settings-close" type="button" aria-label="Close settings" data-close-settings>
+            <i data-lucide="x" aria-hidden="true"></i>
+          </button>
+        </header>
+
+        <section class="settings-section" aria-labelledby="sender-context-title">
+          <div>
+            <small>Sender context</small>
+            <h3 id="sender-context-title">What Noodle should remember</h3>
+          </div>
+          <label class="settings-field">
+            <span>Default offer</span>
+            <textarea rows="2">A prep layer that gives Lightfern better context</textarea>
+          </label>
+          <label class="settings-field">
+            <span>Default tone</span>
+            <select>
+              <option selected>Warm and specific</option>
+              <option>Founder direct</option>
+              <option>Polished operator</option>
+              <option>Concise and curious</option>
+            </select>
+          </label>
+        </section>
+
+        <section class="settings-section" aria-labelledby="handoff-rules-title">
+          <div>
+            <small>Lightfern handoff</small>
+            <h3 id="handoff-rules-title">Packet boundaries</h3>
+          </div>
+          <label class="settings-toggle">
+            <span>
+              <strong>Send research packets only</strong>
+              <small>Lightfern writes the email copy after Noodle prepares context.</small>
+            </span>
+            <input type="checkbox" checked />
+          </label>
+          <label class="settings-toggle">
+            <span>
+              <strong>Include suggested outreach angle</strong>
+              <small>Keep the why-now hook attached to every packet.</small>
+            </span>
+            <input type="checkbox" checked />
+          </label>
+        </section>
+
+        <section class="settings-section" aria-labelledby="source-rules-title">
+          <div>
+            <small>Source preferences</small>
+            <h3 id="source-rules-title">Signals to prioritize</h3>
+          </div>
+          <div class="settings-chip-list" aria-label="Preferred source signals">
+            <button type="button" class="is-selected" aria-pressed="true" data-source-chip>Company site</button>
+            <button type="button" class="is-selected" aria-pressed="true" data-source-chip>Recent posts</button>
+            <button type="button" class="is-selected" aria-pressed="true" data-source-chip>Hiring signals</button>
+            <button type="button" aria-pressed="false" data-source-chip>Funding news</button>
+          </div>
+        </section>
+      </div>
+    </dialog>
 
     <dialog class="sender-modal" aria-labelledby="sender-modal-title">
       <form class="sender-form" data-sender-form>

@@ -11,6 +11,20 @@ const NOODLE_LABELS = {
 };
 
 const SKELETON_COUNT = 3;
+const SKELETON_STEPS = [
+  {
+    title: "Checking company context",
+    detail: "Looking for role, business, and category fit.",
+  },
+  {
+    title: "Finding recent signals",
+    detail: "Scanning for useful timing, source links, and hooks.",
+  },
+  {
+    title: "Preparing Lightfern packet",
+    detail: "Turning the strongest context into draft-ready notes.",
+  },
+];
 
 function getPacketList() {
   return document.querySelector(".packet-list");
@@ -37,7 +51,7 @@ function removePlaceholders(list) {
   list.querySelectorAll(".is-skeleton, .packet-empty").forEach((node) => node.remove());
 }
 
-function createSkeletonCard() {
+function createSkeletonCard(step = SKELETON_STEPS[0]) {
   const card = document.createElement("article");
   card.className = "packet-card is-skeleton";
   card.setAttribute("aria-busy", "true");
@@ -45,10 +59,10 @@ function createSkeletonCard() {
 
   card.innerHTML = `
     <div class="packet-topline">
-      <h3><span class="skeleton-line" style="display:inline-block;width:9rem;height:0.95rem;border-radius:4px;background:var(--soft-2,#f1f2f4);"></span></h3>
-      <span style="opacity:0.55;">Searching…</span>
+      <h3>${step.title}</h3>
+      <span style="opacity:0.55;">Working...</span>
     </div>
-    <p><span class="skeleton-line" style="display:block;width:100%;height:0.85rem;border-radius:4px;background:var(--soft-2,#f1f2f4);"></span></p>
+    <p>${step.detail}</p>
     <ul>
       <li><span class="skeleton-line" style="display:block;width:92%;height:0.8rem;border-radius:4px;background:var(--soft-2,#f1f2f4);"></span></li>
       <li><span class="skeleton-line" style="display:block;width:78%;height:0.8rem;border-radius:4px;background:var(--soft-2,#f1f2f4);"></span></li>
@@ -82,11 +96,11 @@ export function showSearching() {
 
   list.replaceChildren();
   for (let i = 0; i < SKELETON_COUNT; i += 1) {
-    list.appendChild(createSkeletonCard());
+    list.appendChild(createSkeletonCard(SKELETON_STEPS[i]));
   }
 
   const label = getMatchCountEl();
-  if (label) label.textContent = "Searching…";
+  if (label) label.textContent = "Working...";
 }
 
 export function showEmpty(message = "No matches found.") {

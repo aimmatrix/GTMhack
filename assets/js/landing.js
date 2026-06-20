@@ -223,76 +223,17 @@ function createPrism(container, ogl) {
   io.observe(container);
 }
 
-const drafts = {
-  founder: {
-    subject: "Why Northstar should care",
-    body:
-      "Northstar backs workflow software for operational teams. This packet frames Noodle as a lighter way to turn field notes, source links, and founder context into outreach-ready material."
-  },
-  polished: {
-    subject: "Customer reach angle",
-    body:
-      "Target operators who already collect messy notes across calls, field visits, and CRMs. Noodle prepares the match rationale, useful sources, and outreach context before you draft the final email."
-  }
-};
-
-const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
+const $ = (selector) => document.querySelector(selector);
 
-function setVoice(voice) {
-  const draft = drafts[voice];
-  if (!draft) return;
-
-  $$("[data-voice]").forEach((button) => {
-    button.classList.toggle("is-active", button.dataset.voice === voice);
-  });
-
-  const subject = $("[data-draft-subject]");
-  const body = $("[data-draft-body]");
-  if (subject) subject.textContent = draft.subject;
-  if (body) body.textContent = draft.body;
-}
-
-function updateCountdown() {
-  const now = new Date();
-  const end = new Date(now);
-  end.setHours(23, 59, 59, 999);
-  let diff = Math.max(0, end - now);
-
-  const hours = String(Math.floor(diff / 3600000)).padStart(2, "0");
-  diff %= 3600000;
-  const minutes = String(Math.floor(diff / 60000)).padStart(2, "0");
-  diff %= 60000;
-  const seconds = String(Math.floor(diff / 1000)).padStart(2, "0");
-
-  const hourNode = $("[data-hours]");
-  const minuteNode = $("[data-minutes]");
-  const secondNode = $("[data-seconds]");
-  if (hourNode) hourNode.textContent = hours;
-  if (minuteNode) minuteNode.textContent = minutes;
-  if (secondNode) secondNode.textContent = seconds;
-}
-
-$$("[data-voice]").forEach((button) => {
-  button.addEventListener("click", () => setVoice(button.dataset.voice));
-});
-
-$("[data-reach-form]")?.addEventListener("submit", (event) => {
-  const input = event.currentTarget.elements.target;
-  const value = input.value.trim();
-
-  if (!value) {
-    event.preventDefault();
-    input.focus();
-    return;
-  }
-
-  try {
-    localStorage.setItem("noodle-last-target", value);
-  } catch {
-    // The query string still carries the target when storage is unavailable.
-  }
-});
+const targetPrompts = [
+  "Peter at Stripe",
+  "CMOs at DTC brands",
+  "Heads of growth at fintech startups",
+  "Local coffee shops in Shoreditch",
+  "Investors who back AI sales tools",
+  "RevOps leaders at B2B SaaS companies"
+];
 
 const observer = new IntersectionObserver(
   (entries) => {
@@ -308,6 +249,80 @@ const observer = new IntersectionObserver(
 
 $$("[data-reveal]").forEach((node) => observer.observe(node));
 
-updateCountdown();
-setInterval(updateCountdown, 1000);
+const reachInput = $("[data-reach-form] input[name='target']");
+if (reachInput) {
+  let promptIndex = 0;
+  let typedLength = 0;
+  let deleting = false;
+  let pausedUntil = 0;
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const updatePrompt = () => {
+    if (document.activeElement === reachInput || reachInput.value.trim()) {
+      window.setTimeout(updatePrompt, 300);
+      return;
+    }
+
+    const prompt = targetPrompts[promptIndex];
+    if (reducedMotion) {
+      reachInput.placeholder = prompt;
+      return;
+    }
+
+    const now = Date.now();
+    if (now < pausedUntil) {
+      window.setTimeout(updatePrompt, 120);
+      return;
+    }
+
+    reachInput.placeholder = prompt.slice(0, typedLength);
+
+    if (!deleting && typedLength < prompt.length) {
+      typedLength += 1;
+      window.setTimeout(updatePrompt, 58 + Math.random() * 36);
+      return;
+    }
+
+    if (!deleting && typedLength === prompt.length) {
+      deleting = true;
+      pausedUntil = now + 1200;
+      window.setTimeout(updatePrompt, 120);
+      return;
+    }
+
+    if (deleting && typedLength > 0) {
+      typedLength -= 1;
+      window.setTimeout(updatePrompt, 28 + Math.random() * 24);
+      return;
+    }
+
+    promptIndex = (promptIndex + 1) % targetPrompts.length;
+    deleting = false;
+    pausedUntil = now + 240;
+    window.setTimeout(updatePrompt, 120);
+  };
+
+  updatePrompt();
+}
+
+$("[data-reach-form]")?.addEventListener("submit", (event) => {
+  const button = event.currentTarget.querySelector("button[type='submit'] span");
+  const input = event.currentTarget.elements.target;
+  const value = input.value.trim();
+
+  if (!value) {
+    event.preventDefault();
+    input.focus();
+    return;
+  }
+
+  try {
+    localStorage.setItem("noodle-last-target", value);
+  } catch {
+    // The query string still carries the target when storage is unavailable.
+  }
+
+  if (button) button.textContent = "Reaching out";
+});
+
 initPrism();
