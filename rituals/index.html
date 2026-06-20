@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Noodle - Rituals</title>
+    <meta
+      name="description"
+      content="Noodle rituals dashboard for preparing Lightfern-ready reach packets."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+  </head>
+  <body>
+    <script type="module">
+      const response = await fetch("/index.html");
+      const html = await response.text();
+      const doc = new DOMParser().parseFromString(html, "text/html");
+      document.body.replaceWith(doc.body);
+
+      const script = document.createElement("script");
+      script.type = "module";
+      script.src = "/script.js";
+      document.body.append(script);
+    </script>
+  </body>
+</html>

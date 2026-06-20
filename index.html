@@ -3,140 +3,174 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Noodle - Find the Right Reach</title>
+    <title>Noodle - Reach Dashboard</title>
     <meta
       name="description"
-      content="Noodle finds the right people, prepares research context, and hands it to Lightfern for drafting."
+      content="Noodle helps you find the right people, prepare research context, and hand it to Lightfern for drafting."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./styles.css" />
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+    <script type="module" src="./script.js"></script>
   </head>
   <body>
-    <div class="upgrade-bar">
-      <p>Noodle got an upgrade <span aria-hidden="true">✦</span> Built for the Lightfern GTM Hackathon. <a href="#access">Open</a></p>
-    </div>
+    <div class="dashboard-shell">
+      <aside class="sidebar" aria-label="Noodle navigation">
+        <a class="brand" href="#" aria-label="Noodle home">
+          <img
+            src="https://api.dicebear.com/9.x/bottts-neutral/svg?seed=Noodle&backgroundColor=8174ff,6c5cff&radius=18"
+            alt=""
+          />
+          <span>Noodle</span>
+        </a>
 
-    <header class="site-header">
-      <a class="wordmark" href="#top" aria-label="Noodle home">Noodle</a>
-    </header>
-
-    <main id="top">
-      <section class="hero" aria-labelledby="hero-title">
-        <div class="hero-prism" data-prism aria-hidden="true"></div>
-        <div class="hero-inner" data-reveal>
-          <h1 id="hero-title"><em>Own</em> Your<br />Outreach.</h1>
-          <p>
-            Noodle helps you find the right people, understand why they matter,
-            and prepare the context Lightfern needs to draft.
-          </p>
-          <p class="partner-line">
-            Works with <a href="https://lightfern.com/" target="_blank" rel="noreferrer">Lightfern</a>
-            to connect you to the people you actually want.
-          </p>
-          <button class="waitlist-button" type="button" data-open-waitlist>
-            Find my first warm lead
-            <span aria-hidden="true">→</span>
+        <nav class="primary-nav" aria-label="Primary">
+          <button class="nav-item is-active" type="button" data-view="matches">
+            <i data-lucide="search" aria-hidden="true"></i>
+            <span>Find Matches</span>
           </button>
-          <div class="vip-entry" id="access">
-            <span>Have a VIP access code?</span>
-            <button type="button" data-vip-trigger>Enter it here</button>
-          </div>
+          <button class="nav-item" type="button" data-view="packets">
+            <i data-lucide="file-search" aria-hidden="true"></i>
+            <span>Research Packets</span>
+          </button>
+          <button class="nav-item" type="button" data-view="drafts">
+            <i data-lucide="send" aria-hidden="true"></i>
+            <span>Lightfern Drafts</span>
+          </button>
+          <button class="nav-item" type="button" data-view="calendar">
+            <i data-lucide="calendar-days" aria-hidden="true"></i>
+            <span>Reach Calendar</span>
+          </button>
+          <button class="nav-item" type="button" data-view="sources">
+            <i data-lucide="link-2" aria-hidden="true"></i>
+            <span>Source Library</span>
+          </button>
+          <button class="nav-item" type="button" data-view="rituals">
+            <i data-lucide="clock-3" aria-hidden="true"></i>
+            <span>Rituals</span>
+          </button>
+          <button class="nav-item with-chevron" type="button" data-view="settings">
+            <i data-lucide="settings" aria-hidden="true"></i>
+            <span>Settings</span>
+            <i data-lucide="chevron-right" aria-hidden="true"></i>
+          </button>
+        </nav>
+
+        <section class="gift-card" aria-label="Gift access card">
+          <button class="dismiss-card" type="button" aria-label="Dismiss gift card">
+            <i data-lucide="x" aria-hidden="true"></i>
+          </button>
+          <div class="gift-icon" aria-hidden="true">LF</div>
+          <h2>Invite a GTM Teammate</h2>
+          <p>Share 2 one-month Lightfern Reach trials with people building warm outbound.</p>
+          <button class="copy-code" type="button" data-copy-code>
+            <span>ANGELA-GIFT</span>
+            <i data-lucide="copy" aria-hidden="true"></i>
+          </button>
+          <small>
+            <i data-lucide="clock" aria-hidden="true"></i>
+            next code in <b>10d : 09h</b>
+          </small>
+        </section>
+
+        <button class="profile-switcher" type="button">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=96&q=80" alt="Angela" />
+          <span>Angela</span>
+          <i data-lucide="chevron-down" aria-hidden="true"></i>
+        </button>
+      </aside>
+
+      <main class="task-panel" aria-labelledby="dashboard-title">
+        <div class="mobile-topbar">
+          <button class="round-button" type="button" data-toggle-sidebar aria-label="Open menu">
+            <i data-lucide="menu" aria-hidden="true"></i>
+          </button>
+          <span>Noodle</span>
         </div>
-      </section>
 
-      <section class="cohort-band" aria-labelledby="countdown-title">
-        <div class="rule"><span></span></div>
-        <div class="glow" aria-hidden="true"></div>
-        <div class="cohort-inner" data-reveal>
-          <p class="eyebrow" id="countdown-title"><span></span> Next cohort admitted in</p>
-          <div class="countdown" aria-live="polite">
-            <div>
-              <strong data-hours>10</strong>
-              <small>Hours</small>
-            </div>
-            <i aria-hidden="true">:</i>
-            <div>
-              <strong data-minutes>52</strong>
-              <small>Minutes</small>
-            </div>
-            <i aria-hidden="true">:</i>
-            <div>
-              <strong data-seconds>13</strong>
-              <small>Seconds</small>
-            </div>
-          </div>
+        <h1 id="dashboard-title" class="sr-only">Noodle dashboard tasks</h1>
+        <div class="task-list" role="list" aria-label="Setup tasks">
+          <button class="task-row is-done" type="button" data-task="connect-device">
+            <i data-lucide="arrow-right" aria-hidden="true"></i>
+            <span>Connect Your Outreach Source</span>
+          </button>
+          <button class="task-row is-done" type="button" data-task="meet-noodle">
+            <i data-lucide="arrow-right" aria-hidden="true"></i>
+            <span>Meet Noodle</span>
+          </button>
+          <button class="task-row is-done" type="button" data-task="connect-lightfern">
+            <i data-lucide="arrow-right" aria-hidden="true"></i>
+            <span>Connect Lightfern</span>
+          </button>
+          <button class="task-row is-done" type="button" data-task="audit">
+            <i data-lucide="arrow-right" aria-hidden="true"></i>
+            <span>Audit Your Target List</span>
+          </button>
+          <button class="task-row is-done" type="button" data-task="skills">
+            <i data-lucide="arrow-right" aria-hidden="true"></i>
+            <span>Explore Noodle Skills</span>
+          </button>
+          <button class="task-row is-done" type="button" data-task="calendar">
+            <i data-lucide="arrow-right" aria-hidden="true"></i>
+            <span>Reach Calendar</span>
+          </button>
+          <button class="task-row is-current" type="button" data-task="rituals">
+            <i data-lucide="arrow-right" aria-hidden="true"></i>
+            <span>Rituals</span>
+          </button>
         </div>
-        <div class="rule bottom"><span></span></div>
-      </section>
+      </main>
 
-      <section class="dark-copy">
-        <p data-reveal>
-          Noodle reads the web, finds the people worth reaching, and turns each
-          match into a clean packet Lightfern can use.
-        </p>
-      </section>
-
-      <section class="agent-section" id="demo">
-        <div class="agent-copy" data-reveal>
-          <h2>One Brief.<br />Every warm lead.</h2>
-          <p>
-            Describe an investor, customer, startup, or local business. Noodle
-            searches, researches, sends notes through Lightfern completion, and
-            hands off the context for drafting.
-          </p>
-        </div>
-        <div class="agent-card" data-reveal>
-          <div class="terminal-top">
-            <span></span>
-            <span></span>
-            <span></span>
-            <strong>run / outreach</strong>
+      <aside class="assistant-panel" aria-label="Noodle assistant">
+        <header class="assistant-header">
+          <button class="round-button" type="button" data-toggle-sidebar aria-label="Open menu">
+            <i data-lucide="menu" aria-hidden="true"></i>
+          </button>
+          <div class="assistant-title">
+            <img
+              src="https://api.dicebear.com/9.x/bottts-neutral/svg?seed=Noodle&backgroundColor=8174ff,6c5cff&radius=18"
+              alt=""
+            />
+            <strong>Noodle</strong>
+            <span>Reach Assistant @ Angela</span>
           </div>
-          <div class="terminal-lines">
-            <p><b>input</b> pre-seed logistics SaaS investors, UK/EU</p>
-            <p><b>search</b> 12 strong matches found</p>
-            <p><b>lightfern</b> record completed with 4 verified sources</p>
-            <p><b>angle</b> mention AI-assisted GTM workflow research</p>
-            <p><b>handoff</b> context ready for Lightfern</p>
+          <button
+            class="round-button"
+            type="button"
+            data-toggle-assistant
+            aria-expanded="true"
+            aria-label="Collapse assistant"
+          >
+            <i data-lucide="chevrons-right" aria-hidden="true"></i>
+          </button>
+        </header>
+
+        <section class="assistant-empty" aria-live="polite">
+          <p data-assistant-greeting>hey angela.</p>
+        </section>
+
+        <form class="message-composer" data-composer>
+          <button class="round-button" type="button" aria-label="Add attachment">
+            <i data-lucide="plus" aria-hidden="true"></i>
+          </button>
+          <label class="message-field">
+            <span class="sr-only">Message Noodle</span>
+            <input name="message" type="text" autocomplete="off" placeholder="iMessage" />
+          </label>
+          <button class="round-button" type="submit" aria-label="Send message">
+            <i data-lucide="mic" aria-hidden="true"></i>
+          </button>
+          <div class="composer-help" aria-hidden="true">
+            <span><i data-lucide="corner-down-left"></i> to send</span>
+            <span><i data-lucide="shift"></i> <i data-lucide="corner-down-left"></i> for new line</span>
           </div>
-        </div>
-      </section>
-
-      <section class="voice-section">
-        <div class="voice-card" data-reveal>
-          <p class="eyebrow"><span></span> Same search, clearer context</p>
-          <div class="voice-switch" role="tablist" aria-label="Research packet selector">
-            <button class="is-active" data-voice="founder" type="button">Investor</button>
-            <button data-voice="polished" type="button">Customer</button>
-          </div>
-          <h3 data-draft-subject>Northstar Ventures</h3>
-          <p data-draft-body>
-            Why they match: pre-seed investor with logistics software interest.
-            Suggested angle: share the Lightfern hackathon project as a fast
-            prototype for AI-assisted GTM research and drafting.
-          </p>
-        </div>
-      </section>
-    </main>
-
-    <dialog class="waitlist-modal" aria-labelledby="waitlist-title">
-      <form method="dialog">
-        <button class="close-button" aria-label="Close">×</button>
-        <h2 id="waitlist-title">Start with your first warm lead</h2>
-        <p>Get access to the hosted Lightfern Reach demo and prepare your first research packet for Lightfern.</p>
-        <label>
-          Email
-          <input type="email" placeholder="you@company.com" />
-        </label>
-        <button class="waitlist-button" value="submit">Send my invite <span aria-hidden="true">→</span></button>
-      </form>
-    </dialog>
-
-    <script type="module" src="./script.js"></script>
+        </form>
+      </aside>
+    </div>
   </body>
 </html>
